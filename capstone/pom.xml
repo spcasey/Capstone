@@ -20,17 +20,18 @@
 
   <dependencies>
   <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
-<dependency>
-    <groupId>org.mockito</groupId>
-    <artifactId>mockito-all</artifactId>
-    <version>1.10.19</version>
-    <scope>test</scope>
-</dependency>
     <dependency>
-    <groupId>junit</groupId>
-    <artifactId>junit</artifactId>
-    <version>4.12</version>
-</dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -52,10 +53,11 @@
     </dependency>
 
     <dependency>
-  <groupId>com.google.cloud</groupId>
-  <artifactId>google-cloud-translate</artifactId>
-  <version>1.70.0</version>
-</dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-translate</artifactId>
+      <version>1.70.0</version>
+    </dependency>
+  
   </dependencies>
 
   <build>
@@ -72,6 +74,7 @@
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
+      
     </plugins>
   </build>
 </project>
