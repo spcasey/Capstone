@@ -12,76 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Imports charts API.  */
-google.charts.load('current', {'packages': ['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-/**
- * Fetches the information on the /data page and presents it in the fetch
- * containter.
- */
-async function getComment() {
-  const numComments = document.getElementById('numComments').value;
-  const languageForComments = document.getElementById('languageForComments').value;
-  const response = await fetch('/data?numComments=' + numComments +
-  '&languageForComments=' + languageForComments);
-  const fetchResponse = await response.json();
-  const output = document.getElementById('comment-container');
-  output.innerHTML = '';
-  let i;
-  for (i = 0; i < fetchResponse.length; i++) {
-    output.appendChild(createListElement(fetchResponse[i]));
-  }
-}
-
-
-/** @return the list co comments from @param TEXT.
-Creates an <li> element containing text. */
-function createListElement(text) {
-  const liElement = document.createElement('li');
-
-  const commentElement = document.createElement('span');
-  commentElement.innerText = text.body + ' ';
-
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.className = "btn btn-outline-danger";
-  deleteButtonElement.innerText = 'Delete';
-  deleteButtonElement.addEventListener('click', () => {
-    deleteComment(text);
-    liElement.remove();
+/* Builds a map object with zoom functionality */
+function generateMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 41.6764, lng: -86.2520}, 
+    zoom: 9,
   });
-
-  liElement.appendChild(commentElement);
-  liElement.appendChild(deleteButtonElement);
-  return liElement;
-}
-
-/** Tells server to delete a comment @param TEXT. */
-function deleteComment(text) {
-  const params = new URLSearchParams;
-  params.append('commentId', text.id);
-  fetch('/delete-comment', {method: 'POST', body: params});
-}
-
-/** Creates a chart and adds it to the page. */
-function drawChart() {
-  fetch('/question-data').then((response) => response.json())
-      .then((questionVotes) => {
-        const data = new google.visualization.DataTable();
-        data.addColumn('string', 'Question');
-        data.addColumn('number', 'Votes');
-        Object.keys(questionVotes).forEach((question) => {
-          data.addRow([question, questionVotes[question]]);
-        });
-
-        const options = {
-          'title': 'Asked Questions',
-          'width': 600,
-          'height': 500,
-        };
-
-        const chart = new google.visualization.ColumnChart(
-            document.getElementById('chart-container'));
-        chart.draw(data, options);
-      });
 }
