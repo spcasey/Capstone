@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap');
+
+/* Style entire website */
+html, body {
+  height: 100%;
+  width: 100%;
+  color: #222;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* Style navigation bar */
+.navbar {
+  padding: .8rem;
+}
+
+.navbar-nav li{
+  padding-right: 22px;
+}
+
+.nav-link {
+  font-size: 1.1rem !important;
+}
+
+.padding {
+  padding-bottom: 2rem;
+}
+
+/* Style welcome section */
+.welcome {
+  width: 75%;
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+.welcome hr {
+  border-top: 2px solid #b4b4b4;
+  width:95%;
+  margin-top: .3rem;
+  margin-bottom: 1rem;
+}
+
+/* Style the footer */
+footer {
+  background-color: #3f3f3f;
+  color: #d5d5d5;
+  padding-top:2rem;
+}
+
+hr.light {
+  border-top: 1px solid #d5d5d5;
+  width: 75%;
+  margin-top: .8rem;
+  margin-bottom:1rem;
+}
+
+
+/* Style the very first header */
+h5 {
+  vertical-align: middle;
+  line-height: 500px;
+  font-size: 70px;
+}
+
+
+/* Style the top banner for non-home pages */
+.banner2 {
+  height: 500px;
+  background-image: url('images/purplesky.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  text-align: center;
+}
+
+ 
+/* Split the screen in half */
+.split {
+  height: 550px;
+  width: 23%;
+  position: absolute;
+  z-index: 1;
+  top: 750px;
+}
+ 
+
+/* Sets the map height */
+#map {
+  position: relative;
+  height: 90%;
+}
