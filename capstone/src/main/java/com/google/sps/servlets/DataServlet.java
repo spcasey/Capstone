@@ -26,23 +26,27 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.sps.data.Comment;
+
 /* Servlet that handles commenting functionality */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   /*recieves user comment input and Datastores it*/
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment_text = request.getParameter("place-input");
-    if(comment_text.isEmpty() == false){
+    String name = request.getParameter("place-name");
+    String address = request.getParameter("place-address");
+    String location = request.getParameter("location");
+    if(location.isEmpty() == false){
       long time = System.currentTimeMillis();
-      Entity entry = new Entity("Comment");
-      entry.setProperty("text", comment_text);
+      Entity entry = new Entity("Flag");
+      entry.setProperty("name", name);
+      entry.setProperty("address", location);
+      entry.setProperty("location", location);
       entry.setProperty("time", time);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(entry);
     }
-    response.sendRedirect("/comments.html");
+    response.sendRedirect("/index.html");
   }
 
 }
