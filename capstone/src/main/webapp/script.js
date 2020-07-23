@@ -80,6 +80,10 @@ function generateMap() {
     infowindowContent.children['place-icon'].src = place.icon;
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
+    infowindowContent.children['location'].textContent = place.geometry.location;
+    document.getElementById('form-place-name').textContent = place.name;
+    document.getElementById('form-place-address').textContent = address;
+    document.getElementById('form-location').textContent = place.geometry.location;
     infowindow.open(map, marker);
   });
 
@@ -147,3 +151,4 @@ window.onload = function(){
     getCounties();
   }
 }
+
