@@ -56,7 +56,7 @@ public class PlacesServlet extends HttpServlet {
 	  //git request failed, send issue dictionary
       places_string = "{\"error\": \"yes\"}";
 	}
-    System.out.println(places_string);
+    //System.out.println(places_string);
     String json = new Gson().toJson(places_string);
     response.setContentType("application/json");
     response.getWriter().println(json);

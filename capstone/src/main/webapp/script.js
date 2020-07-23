@@ -110,7 +110,12 @@ function getPlaces(lat, lng){
   let radius = 1500; //some predetermined constant
   let link = '/getPlaces?lat=' + lat + '&lng=' + lng + '&radius=' + radius; 
   fetch(link).then(response => response.text()).then((output) => {
-     console.log(output);
+    //console.log(output);
+    let places_dict = JSON.parse(output);
+    console.log(places_dict);
+    console.log(places_dict[1]);
+    console.log(places_dict.html_attributions);
+    console.log(places_dict.results);
   });
 }
 
