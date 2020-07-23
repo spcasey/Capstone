@@ -33,7 +33,7 @@ public class DataServlet extends HttpServlet {
   /*recieves user comment input and Datastores it*/
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String comment_text = request.getParameter("comment_text");
+    String comment_text = request.getParameter("place-input");
     if(comment_text.isEmpty() == false){
       long time = System.currentTimeMillis();
       Entity entry = new Entity("Comment");
@@ -44,4 +44,5 @@ public class DataServlet extends HttpServlet {
     }
     response.sendRedirect("/comments.html");
   }
+
 }
