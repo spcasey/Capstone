@@ -29,7 +29,10 @@ function generateMap() {
     zoom: 15,
     styles: map_style
   });
-  map.setOptions({ minZoom: 12, maxZoom: 15 });
+  map.setOptions({
+    minZoom: 12, 
+    maxZoom: 18 //whats the max allowed by google maps??
+  });
   //map.clearOverlays(); //clear markers
   let card = document.getElementById('pac-card');
   let input = document.getElementById('pac-input');
@@ -133,33 +136,35 @@ function getPlaces(lat, lng){
       if (places_result.length > 0) {
         for (let i = 0; i < places_result.length; i++) {
           if(places_result[i].business_status !== undefined){//business, not locality
-          let id = places_result[i].name + ';' + places_result[i].geometry.location.lat + ',' + places_result[i].geometry.location.lng;
-          let marker = new google.maps.Marker({
-            position: {lat: places_result[i].geometry.location.lat, lng: places_result[i].geometry.location.lng},
-            map: map,
-            icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
-            title: places_result[i].name,
-            id: id
-          });
-          marker_dict[id] = {'place_icon': places_result[i].icon, 'place_name': places_result[i].icon,
-          'place-address': places_result[i].vicinity, 'geometry': places_result[i].geometry.location
-          };
-          google.maps.event.addListener(marker, 'click', function() {
-            let place = marker_dict[marker.id];
-
-            console.log(place)
-            /*let infowindowContent = document.getElementById('infowindow-content');
-            infowindowContent.children['place-icon'].src = place.icon;
-            infowindowContent.children['place-name'].textContent = place.name;
-            infowindowContent.children['place-address'].textContent = place.name;
-            infowindowContent.children['location'].textContent = place.geometry;
-            document.getElementById('form-place-name').textContent = place.name;
-            document.getElementById('form-place-address').textContent = place.vicinity;
-            infoWindow.setContent(infowindowContent);
-
-            infoWindow.open(map, marker);*/
-          });
-          establishment_markers.push(marker);
+            let id = places_result[i].name + ';' + places_result[i].geometry.location.lat + ',' + places_result[i].geometry.location.lng;
+            let marker = new google.maps.Marker({
+              position: {lat: places_result[i].geometry.location.lat, lng: places_result[i].geometry.location.lng},
+              map: map,
+              icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+              title: places_result[i].name,
+              id: id
+            });
+            marker_dict[id] = {'place_icon': places_result[i].icon, 'place_name': places_result[i].name,
+              'place_address': places_result[i].vicinity, 'geometry': {"lat": places_result[i].geometry.location.lat, 
+              "lng": places_result[i].geometry.location.lng}
+            };
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+              return function() {
+                let place = marker_dict[marker.id];
+                console.log(place)
+                console.log(place["place_address"])
+                let infowindowContent = document.getElementById('infowindow-content');
+                infowindowContent.children['place-icon'].src = place["place_icon"];
+                infowindowContent.children['place-name'].textContent = place["place_name"];
+                infowindowContent.children['place-address'].textContent = place["place_address"];
+                document.getElementById('form-place-name').textContent = place["place_name"];
+                document.getElementById('form-place-address').textContent = place["place_address"];
+                document.getElementById('form-location').textContent = JSON.stringify(place["geometry"]);
+                infoWindow.setContent(infowindowContent);
+                infoWindow.open(map, marker);
+              }
+            })(marker, i));
+            establishment_markers.push(marker);
           }
         }
       } else {//Google Places couldn't find places near the user, 
