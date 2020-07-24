@@ -40,12 +40,15 @@ public class DataServlet extends HttpServlet {
       long time = System.currentTimeMillis();
       Entity entry = new Entity("Flag");
       entry.setProperty("name", name);
-      entry.setProperty("address", location);
+      entry.setProperty("address", address);
       entry.setProperty("location", location);
       entry.setProperty("time", time);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(entry);
     }
+    /*System.out.println(name);
+    System.out.println(address);
+    System.out.println(location);*/
     response.sendRedirect("/index.html");
   }
 

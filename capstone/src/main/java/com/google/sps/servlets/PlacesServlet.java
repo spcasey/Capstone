@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 import com.google.gson.Gson;
+import org.json.JSONObject; 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -56,10 +57,8 @@ public class PlacesServlet extends HttpServlet {
 	  //git request failed, send issue dictionary
       places_string = "{\"error\": \"yes\"}";
 	}
-    //System.out.println(places_string);
-    String json = new Gson().toJson(places_string);
+    JSONObject json = new JSONObject(places_string);
     response.setContentType("application/json");
-    response.getWriter().println(json);
-    //response.sendRedirect("/index.html");
+    response.getWriter().println(json.toString());
   }
 }
