@@ -156,3 +156,16 @@ h5 {
   font-weight: 500;
   padding: 6px 12px;
 }
+
+.splash-page {
+  position: relative;
+  text-align: center;
+}
+
+/* Center text */
+.centered {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

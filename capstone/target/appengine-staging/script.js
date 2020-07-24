@@ -14,6 +14,7 @@
 
 let map;
 let map_style;
+let establishments = [];
 let establishment_markers = [];
 let marker_dict = {};
 
@@ -183,9 +184,9 @@ function getCounties(){
 }
 
 /* Prints geolocation success to console */
-function userLocationSuccess(location){
+function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
-  getPlaces(location.coords.latitude, location.coords.longitude);
+  getPlaces(latitude, longitude);
 }
 
 /* Prints geolocation failure to console */
@@ -196,12 +197,24 @@ function userLocationFail(error){
 
 
 window.onload = function(){
-  let establishments = [];
+  $.ajax({
+    type : 'POST',
+    data: '', 
+    url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM", 
+    success: function(result){
+      userLocationSuccess(result.location.lat, result.location.lng);
+    },
+    error: function(error){
+      getCounties(); 
+    }}
+  );
+  /*
+  //Use this method when working in local host
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(userLocationSuccess, userLocationFail);
   } else {
     //geolocation not supported
     getCounties();
-  }
+  }*/
 }
 
