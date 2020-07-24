@@ -29,6 +29,10 @@ function generateMap() {
     zoom: 15,
     styles: map_style
   });
+  map.setOptions({
+    minZoom: 12, 
+    maxZoom: 18 //whats the max allowed by google maps??
+  });
   //map.clearOverlays(); //clear markers
   let card = document.getElementById('pac-card');
   let input = document.getElementById('pac-input');

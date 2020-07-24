@@ -29,6 +29,7 @@ function generateMap() {
     zoom: 15,
     styles: map_style
   });
+  map.setOptions({ minZoom: 12, maxZoom: 15 });
   //map.clearOverlays(); //clear markers
   let card = document.getElementById('pac-card');
   let input = document.getElementById('pac-input');
