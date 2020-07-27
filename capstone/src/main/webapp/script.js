@@ -14,6 +14,7 @@
 
 let map;
 let map_style;
+let establishments = [];
 let establishment_markers = [];
 let marker_dict = {};
 let flag_dict = {};
@@ -227,10 +228,14 @@ function getCounties(){
 }
 
 /* Prints geolocation success to console */
-function userLocationSuccess(location){
+function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
+<<<<<<< HEAD
   getPlaces(location.coords.latitude, location.coords.longitude);
   getFlags();
+=======
+  getPlaces(latitude, longitude);
+>>>>>>> 8222f8b459774142b658387beb50701b8819e4ee
 }
 
 /* Prints geolocation failure to console */

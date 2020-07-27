@@ -17,7 +17,6 @@ let map_style;
 let establishments = [];
 let establishment_markers = [];
 let marker_dict = {};
-let flag_dict = {};
 
 /* Builds map object with zoom functionality */
 function generateMap() {
@@ -97,8 +96,7 @@ function generateMap() {
     infowindowContent.children['location'].textContent = place.geometry.location;
     document.getElementById('form-place-name').textContent = place.name;
     document.getElementById('form-place-address').textContent = address;
-    document.getElementById('form-lat').textContent = place.geometry.location.lat();
-    document.getElementById('form-long').textContent = place.geometry.location.lng();
+    document.getElementById('form-location').textContent = place.geometry.location;
     infowindow.open(map, marker);
   });
 
@@ -148,8 +146,8 @@ function getPlaces(lat, lng){
               id: id
             });
             marker_dict[id] = {'place_icon': places_result[i].icon, 'place_name': places_result[i].name,
-              'place_address': places_result[i].vicinity, 'place_lat': places_result[i].geometry.location.lat, 
-              'place_lng': places_result[i].geometry.location.lng
+              'place_address': places_result[i].vicinity, 'geometry': {"lat": places_result[i].geometry.location.lat, 
+              "lng": places_result[i].geometry.location.lng}
             };
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
               return function() {
@@ -162,13 +160,11 @@ function getPlaces(lat, lng){
                 infowindowContent.children['place-address'].textContent = place["place_address"];
                 document.getElementById('form-place-name').textContent = place["place_name"];
                 document.getElementById('form-place-address').textContent = place["place_address"];
-                document.getElementById('form-lat').textContent = place["place_lat"];
-                document.getElementById('form-long').textContent = place["place_lng"];
+                document.getElementById('form-location').textContent = JSON.stringify(place["geometry"]);
                 infoWindow.setContent(infowindowContent);
                 infoWindow.open(map, marker);
               }
-            }
-            )(marker, i));
+            })(marker, i));
             establishment_markers.push(marker);
           }
         }
@@ -181,61 +177,16 @@ function getPlaces(lat, lng){
   });
 }
 
-/* Populate the maps with flags. */
-async function getFlags() {
-    let infoWindow = new google.maps.InfoWindow();
-    const response = await fetch('/data');
-    const flags = await response.json();
-        for (let i = 0; i < flags.length; i++) {
-            let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
-            var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
-            var marker = new google.maps.Marker({
-              position: myLatlng,
-              map: map,
-              icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-              title: flags[i].name,
-              id: id
-            });
-            flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
-              'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
-              'place_lng': flags[i].lng
-            };
-            google.maps.event.addListener(marker, 'click', (function(flag, i) {
-              return function() {
-                    let flag_marker = flag_dict[flag.id];
-                    let infowindowContent = document.getElementById('infowindow-content');
-                    infowindowContent.children['place-icon'].src = flag_marker["flag_icon"];
-                    infowindowContent.children['place-name'].textContent = flag_marker["flag_name"];
-                    infowindowContent.children['place-address'].textContent = flag_marker["flag_address"];
-                    document.getElementById('form-place-name').textContent = flag_marker["flag_name"];
-                    document.getElementById('form-place-address').textContent = flag_marker["flag_address"];
-                    document.getElementById('form-lat').textContent = flag_marker["flag_lat"];
-                    document.getElementById('form-long').textContent = flag_marker["flag_lng"];
-                    infoWindow.setContent(infowindowContent);
-                    infoWindow.open(map, marker);
-              }
-            }
-            )(marker, i));
-        }
-};
-
-
 /* Retrieves counties based on a passed longtiude and latitude */
 function getCounties(){
   console.log('getCounties');
   getPlaces(-33.00, 151.00);
-  getFlags();
 }
 
 /* Prints geolocation success to console */
 function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
-<<<<<<< HEAD
-  getPlaces(location.coords.latitude, location.coords.longitude);
-  getFlags();
-=======
   getPlaces(latitude, longitude);
->>>>>>> 8222f8b459774142b658387beb50701b8819e4ee
 }
 
 /* Prints geolocation failure to console */
