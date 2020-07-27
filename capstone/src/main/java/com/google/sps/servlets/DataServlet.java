@@ -53,7 +53,7 @@ public class DataServlet extends HttpServlet {
     /*System.out.println(name);
     System.out.println(address);
     System.out.println(location);*/
-    response.sendRedirect("/index.html");
+    response.sendRedirect("/home.html");
   }
 
   @Override
