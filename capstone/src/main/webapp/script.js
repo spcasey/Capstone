@@ -241,12 +241,24 @@ function userLocationFail(error){
 
 
 window.onload = function(){
-  let establishments = [];
+  $.ajax({
+    type : 'POST',
+    data: '', 
+    url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM", 
+    success: function(result){
+      userLocationSuccess(result.location.lat, result.location.lng);
+    },
+    error: function(error){
+      getCounties(); 
+    }}
+  );
+  /*
+  //Use this method when working in local host
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(userLocationSuccess, userLocationFail);
   } else {
     //geolocation not supported
     getCounties();
-  }
+  }*/
 }
 
