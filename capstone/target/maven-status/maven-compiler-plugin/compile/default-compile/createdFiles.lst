@@ -1,4 +1,4 @@
 com/google/sps/data/User.class
-com/google/sps/data/Comment.class
+com/google/sps/data/Flag.class
 com/google/sps/servlets/PlacesServlet.class
 com/google/sps/servlets/DataServlet.class

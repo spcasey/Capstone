@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.sps.data.Flag;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -35,18 +36,52 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("place-name");
     String address = request.getParameter("place-address");
-    String location = request.getParameter("location");
-    if(location.isEmpty() == false){
+    String lat = request.getParameter("lat");
+    String lng = request.getParameter("long");
+    long timestamp = System.currentTimeMillis();
+    if(lat.isEmpty() == false){
       long time = System.currentTimeMillis();
       Entity entry = new Entity("Flag");
       entry.setProperty("name", name);
-      entry.setProperty("address", location);
-      entry.setProperty("location", location);
-      entry.setProperty("time", time);
+      entry.setProperty("address", address);
+      entry.setProperty("lat", lat);
+      entry.setProperty("long", lng);
+      entry.setProperty("timestamp", timestamp);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(entry);
     }
+    /*System.out.println(name);
+    System.out.println(address);
+    System.out.println(location);*/
     response.sendRedirect("/index.html");
   }
+
+  @Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		Query query = new Query("Flag").addSort("timestamp", SortDirection.DESCENDING);
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery results = datastore.prepare(query);
+
+		ArrayList <Flag> flags = new ArrayList < >();
+		for (Entity entity: results.asIterable()) {
+			long id = entity.getKey().getId();
+			String name = (String) entity.getProperty("name");
+            String address = (String) entity.getProperty("address");
+            String lat = (String) entity.getProperty("lat");
+            String lng = (String) entity.getProperty("long");
+			long timestamp = (long) entity.getProperty("timestamp");
+
+			Flag flag = new Flag(id, name, address, lat, lng, timestamp);
+			flags.add(flag);
+		}
+		Gson gson = new Gson();
+        for (Flag f : flags) {
+            System.out.println(f.name + " " + f.lat + " " + f.lng);
+        }
+		response.setContentType("application/json; charset=UTF-8");
+		response.getWriter().println(gson.toJson(flags));
+	}
 
 }
