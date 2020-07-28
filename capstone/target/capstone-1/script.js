@@ -19,6 +19,7 @@ let establishment_markers = [];
 let marker_dict = {};
 let flag_dict = {};
 
+
 /* Builds map object with zoom functionality */
 function generateMap() {
   let time = new Date();
@@ -100,6 +101,10 @@ function generateMap() {
     document.getElementById('form-lat').textContent = place.geometry.location.lat();
     document.getElementById('form-long').textContent = place.geometry.location.lng();
     infowindow.open(map, marker);
+
+    marker.addListener('click', function() {
+        infowindow.open(map, marker);
+    });
   });
 
   // Sets a listener on a radio button to change the filter type on Places Autocomplete
@@ -183,23 +188,44 @@ function getPlaces(lat, lng){
 
 /* Populate the maps with flags. */
 async function getFlags() {
-    let infoWindow = new google.maps.InfoWindow();
     const response = await fetch('/data');
     const flags = await response.json();
         for (let i = 0; i < flags.length; i++) {
-            let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
+            createFlag(flags, i);
+        }
+};
+
+function createFlag(flags, i) {
+    var infoWindow = new google.maps.InfoWindow();
+    let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
             var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
             var marker = new google.maps.Marker({
               position: myLatlng,
               map: map,
               icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
               title: flags[i].name,
-              id: id
+              id: id,
+              content:'<div>'+
+                '<span class="title">' + flags[i].name + '</span><br>' +
+                '<span>' + flags[i].address + '</span>'
             });
+
             flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
               'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
               'place_lng': flags[i].lng
             };
+            
+            var contentString = '<div>'+
+                '<span class="title">' + flags[i].name + '</span><br>' +
+                '<span>' + flags[i].address + '</span>';
+
+
+            marker.addListener('click', function() {
+                infoWindow.setContent(this.content);
+                infoWindow.open(map, marker);
+            });
+            
+            /**
             google.maps.event.addListener(marker, 'click', (function(flag, i) {
               return function() {
                     let flag_marker = flag_dict[flag.id];
@@ -212,12 +238,15 @@ async function getFlags() {
                     document.getElementById('form-lat').textContent = flag_marker["flag_lat"];
                     document.getElementById('form-long').textContent = flag_marker["flag_lng"];
                     infoWindow.setContent(infowindowContent);
-                    infoWindow.open(map, marker);
+                    if (infoWindowClosed = true) {
+                        infoWindow.open(map, marker);
+                        infoWindowClosed = false;
+                    } 
               }
             }
             )(marker, i));
-        }
-};
+            */
+}
 
 
 /* Retrieves counties based on a passed longtiude and latitude */
