@@ -157,15 +157,40 @@ h5 {
   padding: 6px 12px;
 }
 
+.index-page{
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  text-align: center; 
+  background-image: url('../images/image.jpg'); 
+  background-size: 100% 100%;
+}
+
 .splash-page {
-  position: relative;
   text-align: center;
 }
 
-/* Center text */
 .centered {
-  position: absolute;
+  display: inline-block;
+  /*position: relative;
   top: 30%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);*/
+}
+
+.button {
+	background-color:#808080;
+	border-radius:15px;
+	display: inline-block;
+	cursor: pointer;
+	color: #fff;
+	font-size: 14px;
+	padding: 12px 16px;
+}
+.button:hover {
+	background-color:#6c7c7c;
+}
+.button:active {
+	position: relative;
+	top: 1px;
 }

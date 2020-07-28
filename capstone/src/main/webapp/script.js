@@ -21,7 +21,7 @@ let flag_dict = {};
 function generateMap() {
   let time = new Date();
   map_style = day_map_style;
-  if (time.getHours() >= 18) { //after 6:00 pm
+  if (time.getHours() >= 9) { //18 : after 6:00 pm
     map_style = night_map_style;
   }
   map = new google.maps.Map(document.getElementById('map'), {
@@ -242,12 +242,9 @@ function createFlag(flags, i) {
               }
             }
             )(marker, i));
-<<<<<<< HEAD
         }
 };
- 
- 
-=======
+
             */
 }
 
@@ -273,6 +270,12 @@ function userLocationFail(error){
  
  
 window.onload = function(){
+  let time = new Date();
+  if (time.getHours() >= 9) { //18: after 6:00 pm
+    document.body.style.backgroundColor = '#614051';
+    document.getElementById("home").style.color = '#614051';
+    document.getElementById("about").style.color = '#614051';
+  }
   $.ajax({
     type : 'POST',
     data: '', 
