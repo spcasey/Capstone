@@ -1,9 +1,4 @@
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/servlets/PlacesServlet.java
-<<<<<<< HEAD
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/data/Flag.java
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/servlets/DataServlet.java
-=======
-/home/micyohan/Capstone/capstone/src/main/java/com/google/sps/servlets/DataServlet.java
-/home/micyohan/Capstone/capstone/src/main/java/com/google/sps/data/Comment.java
->>>>>>> 8222f8b459774142b658387beb50701b8819e4ee
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/data/User.java

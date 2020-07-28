@@ -17,12 +17,6 @@ let map_style;
 let establishment_markers = [];
 let marker_dict = {};
 let flag_dict = {};
-<<<<<<< HEAD
- 
-=======
-
-
->>>>>>> 09eba02bba385f16925e8973732579ea630c16c5
 /* Builds map object with zoom functionality */
 function generateMap() {
   let time = new Date();
@@ -257,8 +251,6 @@ function createFlag(flags, i) {
             */
 }
 
-
->>>>>>> 09eba02bba385f16925e8973732579ea630c16c5
 /* Retrieves counties based on a passed longtiude and latitude */
 function getCounties(){
   console.log('getCounties');
@@ -267,9 +259,9 @@ function getCounties(){
 }
  
 /* Prints geolocation success to console */
-function userLocationSuccess(location){
+function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
-  getPlaces(location.coords.latitude, location.coords.longitude);
+  getPlaces(latitude, longitude);
   getFlags();
 }
  
