@@ -273,8 +273,8 @@ window.onload = function(){
   let time = new Date();
   if (time.getHours() >= 9) { //18: after 6:00 pm
     document.body.style.backgroundColor = '#614051';
-    document.getElementById("home").style.color = '#614051';
-    document.getElementById("about").style.color = '#614051';
+    /*document.getElementById("home").style.color = '#614051';
+    document.getElementById("about").style.color = '#614051';*/
   }
   $.ajax({
     type : 'POST',
