@@ -77,9 +77,6 @@ public class DataServlet extends HttpServlet {
 			flags.add(flag);
 		}
 		Gson gson = new Gson();
-        for (Flag f : flags) {
-            System.out.println(f.name + " " + f.lat + " " + f.lng);
-        }
 		response.setContentType("application/json; charset=UTF-8");
 		response.getWriter().println(gson.toJson(flags));
 	}
