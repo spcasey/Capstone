@@ -128,7 +128,7 @@ function generateMap() {
 function getPlaces(lat, lng){
   map.setCenter({lat: lat, lng: lng}); 
   console.log(lat + ', ' + lng);
-  let radius = 1500; //some predetermined constant
+  let radius = 5000; //some predetermined constant
   let link = '/getPlaces?lat=' + lat + '&lng=' + lng + '&radius=' + radius; 
   let infoWindow = new google.maps.InfoWindow();
  
@@ -142,6 +142,7 @@ function getPlaces(lat, lng){
         for (let i = 0; i < places_result.length; i++) {
           if(places_result[i].business_status !== undefined){//business, not locality
             let id = places_result[i].name + ';' + places_result[i].geometry.location.lat + ',' + places_result[i].geometry.location.lng;
+
             let marker = new google.maps.Marker({
               position: {lat: places_result[i].geometry.location.lat, lng: places_result[i].geometry.location.lng},
               map: map,
@@ -149,6 +150,7 @@ function getPlaces(lat, lng){
               title: places_result[i].name,
               id: id
             });
+            
             marker_dict[id] = {'place_icon': places_result[i].icon, 'place_name': places_result[i].name,
               'place_address': places_result[i].vicinity, 'place_lat': places_result[i].geometry.location.lat, 
               'place_lng': places_result[i].geometry.location.lng
