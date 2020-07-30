@@ -38,6 +38,7 @@ public class PlacesServlet extends HttpServlet {
     String radius = request.getParameter("radius");
     String link = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
       + lat + "," + lng + "&radius=" + radius + "&key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM";
+    //&hasNextPage=true&nextPage()=true for pagination
     String places_string = "";
     URL url = new URL(link);
     HttpURLConnection url_connect = (HttpURLConnection) url.openConnection();
