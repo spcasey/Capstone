@@ -11,19 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+ 
 let map;
 let map_style;
 let establishment_markers = [];
 let marker_dict = {};
 let flag_dict = {};
-
-
 /* Builds map object with zoom functionality */
 function generateMap() {
   let time = new Date();
   map_style = day_map_style;
-  if (time.getHours() >= 18) { //after 6:00 pm
+  if (time.getHours() >= 18) { //18 : after 6:00 pm
     map_style = night_map_style;
   }
   map = new google.maps.Map(document.getElementById('map'), {
@@ -42,16 +40,16 @@ function generateMap() {
   let strictBounds = document.getElementById('strict-bounds-selector');
   let autocomplete = new google.maps.places.Autocomplete(input);
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-
+ 
   // Bind the map's bounds (viewport) property to the autocomplete object,
   // so that the autocomplete requests use the current map bounds for the
   // bounds option in the request.
   autocomplete.bindTo('bounds', map);
-
+ 
   // Set the data fields to return when the user selects a place.
   autocomplete.setFields(
   ['address_components', 'geometry', 'icon', 'name']);
-
+ 
   let infowindow = new google.maps.InfoWindow();
   let infowindowContent = document.getElementById('infowindow-content');
   infowindow.setContent(infowindowContent);
@@ -69,7 +67,7 @@ function generateMap() {
       window.alert('No details available for input: \'' + place.name + '\'');
       return;
     }
-
+ 
     // If the place has a geometry, then present it on a map
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
@@ -80,7 +78,7 @@ function generateMap() {
     
     marker.setPosition(place.geometry.location);
     marker.setVisible(true);
-
+ 
     let address = '';
     
     if (place.address_components) {
@@ -90,7 +88,7 @@ function generateMap() {
         (place.address_components[2] && place.address_components[2].short_name || '')
       ].join(' ');
     }
-
+ 
     infowindowContent.children['place-icon'].src = place.icon;
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
@@ -105,7 +103,7 @@ function generateMap() {
         infowindow.open(map, marker);
     });
   });
-
+ 
   // Sets a listener on a radio button to change the filter type on Places Autocomplete
   function setupClickListener(id, types) {
     let radioButton = document.getElementById(id);
@@ -113,19 +111,19 @@ function generateMap() {
       autocomplete.setTypes(types);
     });
   }
-
+ 
   setupClickListener('changetype-all', []);
   setupClickListener('changetype-address', ['address']);
   setupClickListener('changetype-establishment', ['establishment']);
   setupClickListener('changetype-geocode', ['geocode']);
-
+ 
   document.getElementById('use-strict-bounds')
   .addEventListener('click', function() {
     console.log('Checkbox clicked! New state=' + this.checked);
     autocomplete.setOptions({strictBounds: this.checked});
   });
 }
-
+ 
 /* Retrieves places based on a passed longitude and latitude */
 function getPlaces(lat, lng){
   map.setCenter({lat: lat, lng: lng}); 
@@ -133,7 +131,7 @@ function getPlaces(lat, lng){
   let radius = 1500; //some predetermined constant
   let link = '/getPlaces?lat=' + lat + '&lng=' + lng + '&radius=' + radius; 
   let infoWindow = new google.maps.InfoWindow();
-
+ 
   fetch(link).then(response => response.text()).then((output) => {
     let places_dict = JSON.parse(output);
     if (places_dict['error'] === undefined) { 
@@ -184,7 +182,7 @@ function getPlaces(lat, lng){
     }
   });
 }
-
+ 
 /* Populate the maps with flags. */
 async function getFlags() {
     const response = await fetch('/data');
@@ -244,38 +242,26 @@ function createFlag(flags, i) {
               }
             }
             )(marker, i));
+        }
+};
+
             */
 }
-
-
-/* Retrieves counties based on a passed longtiude and latitude */
-function getCounties(){
-  console.log('getCounties');
-  getPlaces(-33.00, 151.00);
-  getFlags();
-}
-
+ 
 /* Prints geolocation success to console */
-function userLocationSuccess(location){
+function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
-  getPlaces(location.coords.latitude, location.coords.longitude);
+  getPlaces(latitude, longitude);
   getFlags();
 }
-
+ 
 /* Prints geolocation failure to console */
 function userLocationFail(error){ 
   //callback function needs a geolocationerror as a singular arg, hence why it just calls the fallback function
   getCounties();
 }
+ 
+ 
 
-
-window.onload = function(){
-  let establishments = [];
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(userLocationSuccess, userLocationFail);
-  } else {
-    //geolocation not supported
-    getCounties();
-  }
-}
-
+ 
+ 
