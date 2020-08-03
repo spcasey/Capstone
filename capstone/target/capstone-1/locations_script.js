@@ -94,6 +94,7 @@ function userLocationFail(error){
 }
  
 window.onload = function(){
+  localStorage.setItem("prev_page", "home");
   let time = new Date();
   if (time.getHours() >= 18) { //18: after 6:00 pm
     document.body.style.backgroundColor = '#614051';

@@ -96,10 +96,15 @@ function generateMap() {
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
     infowindowContent.children['location'].textContent = place.geometry.location;
-    document.getElementById('form-place-name').textContent = place.name;
+    localStorage.setItem("form-place-name", place.name);
+    localStorage.setItem("form-place-address", address);
+    localStorage.setItem("form-lat", place.geometry.location.lat());
+    localStorage.setItem("form-long", place.geometry.location.lng());
+
+    /*document.getElementById('form-place-name').textContent = place.name;
     document.getElementById('form-place-address').textContent = address;
     document.getElementById('form-lat').textContent = place.geometry.location.lat();
-    document.getElementById('form-long').textContent = place.geometry.location.lng();
+    document.getElementById('form-long').textContent = place.geometry.location.lng();*/
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
