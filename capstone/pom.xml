@@ -57,7 +57,7 @@
       <artifactId>google-cloud-translate</artifactId>
       <version>1.70.0</version>
     </dependency>
-  
+
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>

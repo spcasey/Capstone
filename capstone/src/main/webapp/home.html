@@ -2,8 +2,9 @@
 <html>
 <!-- Styling using Bootstrap and other libraries -->
 <head>
+  <meta name="google-signin-client_id" content="911458868306-sra05ptdvp1b03o4mkgton7lunjqena5.apps.googleusercontent.com">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Capstone</title>
+  <title>COVID Tracker</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
   <link href="style.css" rel="stylesheet">
@@ -17,6 +18,7 @@
   <script src="flags_script.js"></script>
   <script src="locations_script.js"></script>
   <script src="night_map.js"></script> 
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="login_script.js"></script>
   <script src="day_map.js"></script> 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
@@ -41,7 +43,10 @@
             <a id="about" class="nav-link" href="about.html">About Us</a>
           </li>
           <li class="nav-item">
-            <a id="about" class="nav-link" href="login.html">Login</a>
+            <div class="g-signin2" data-onsuccess="onSignIn" onclick="reload();"></div>
+          </li>
+          <li class="nav-item">
+            <a href="#" onclick="signOut();">Sign out</a>
           </li>
         </ul> 
       </div>
@@ -85,22 +90,26 @@
           <span id="place-name"  class="title"></span><br>
           <span id="place-address"></span>
           <span id="location"></span>
-          <form action="/data" method="POST">
+          <form id="autoCompleteForm" action="/data" method="POST">
              <textarea readonly name="place-name" id="form-place-name" 
-               style="opacity:0;"></textarea>
+               style="opacity:0;" style="display:none;"></textarea>
              <textarea readonly name="place-address" id="form-place-address"
-               style="opacity:0;"></textarea>
+               style="opacity:0;" style="display:none;"></textarea>
              <textarea readonly name="lat" id="form-lat"
-               style="opacity:0;"></textarea>
+               style="opacity:0;" style="display:none;"></textarea>
              <textarea readonly name="long" id="form-long"
-               style="opacity:0;"></textarea>
-             <input class="btn btn-outline-danger" style="text-align:right" type="submit" />
+               style="opacity:0;" style="display:none;"></textarea>
+             <input class="btn btn-outline-danger" style="text-align:right" style="display:none;" type="submit" />
           </form>
         </div>
         
       </div>
     </div>
   </div>
+
+<a href="#" onclick="testIsSignedIn();">isSignIn</a>
+<textarea id="test"></textarea>
+
 </body>
 
 </html>

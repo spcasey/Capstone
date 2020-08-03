@@ -1,25 +1,34 @@
-/*gets comments from servlet doGet and displays it*/
-function checkLogin(){
-  fetch('/login').then(response => response.text()).then((output) => {
-    let user;
-    let login_link = document.getElementById('login_link');
-    let status = JSON.parse(output);
-    if(status['login-status'] === 'out'){
-      login_link.innerHTML = 'Login';
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId());
+  console.log('Name: ' + profile.getName());
+  console.log('Email: ' + profile.getEmail());
+}
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+    location.reload();
+}
+
+function isSignedIn() {
+  return gapi.auth2.getAuthInstance().isSignedIn.get();
+}
+
+function checkLogin() {
+    if (!isSignedIn()) {
+        document.getElementById("autoCompleteForm").style.display = "none";
+    } else {
+        document.getElementById("autoCompleteForm").style.display = "block";
     }
-    if(status['login-status'] === 'in'){
-      localStorage.setItem('userEmail', status['userEmail']);
-      localStorage.setItem('highScore', status['highScore']);
-      document.getElementById('greet-user').innerHTML = 'Hello ' + status['userEmail'] + '!';
-      document.getElementById('greet-user').style.display = 'block';
-      login_link.innerHTML = 'Logout';
-      user = status['user'];
+}
+
+function reload() {
+    setInterval(function() {
+    if(gapi.auth2.getAuthInstance().isSignedIn.get()) {
+        location.reload();
     }
-    login_link.href = status['url'];
-    login_link.onclick = '#';
-    login_link.style.display = 'block';
-    if(status['first-time?'] === true){
-      document.getElementById('question').style.display = 'block';
-    }
-  });
+}, 1000);
 }
