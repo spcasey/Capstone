@@ -18,11 +18,11 @@ function isSignedIn() {
 }
 
 function checkLogin() {
-    if (!isSignedIn()) {
-        document.getElementById("autoCompleteForm").style.display = "none";
+    /*if (!isSignedIn()) {
+        document.getElementById("report").style.display = "none";
     } else {
-        document.getElementById("autoCompleteForm").style.display = "block";
-    }
+        document.getElementById("report").style.display = "block";
+    }*/
 }
 
 function reload() {
