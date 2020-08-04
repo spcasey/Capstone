@@ -19,9 +19,9 @@ function isSignedIn() {
 
 function checkLogin() {
     if (!isSignedIn()) {
-        document.getElementById("autoCompleteForm").style.display = "none";
+        document.getElementById("report").style.display = "none";
     } else {
-        document.getElementById("autoCompleteForm").style.display = "block";
+        document.getElementById("report").style.display = "block";
     }
 }
 

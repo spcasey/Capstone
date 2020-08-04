@@ -6,6 +6,7 @@ html, body {
   width: 100%;
   color: #222;
   font-family: 'Noto Sans JP', sans-serif;
+  overflow: hidden;
 }
 
 /* Style navigation bar */
