@@ -20,8 +20,10 @@ function isSignedIn() {
 function checkLogin() {
     if (!isSignedIn()) {
         document.getElementById("report").style.display = "none";
+        document.getElementById("sign_out").style.display = "none";
     } else {
         document.getElementById("report").style.display = "block";
+        document.getElementById("sign_in").style.display = "none";
     }
 }
 
