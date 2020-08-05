@@ -117,11 +117,6 @@ function generateMap() {
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
-
-    /*document.getElementById('form-place-name').textContent = place.name;
-    document.getElementById('form-place-address').textContent = address;
-    document.getElementById('form-lat').textContent = place.geometry.location.lat();
-    document.getElementById('form-long').textContent = place.geometry.location.lng();*/
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
@@ -181,33 +176,9 @@ function createFlag(flags, i) {
     marker.addListener('click', function() {
       infoWindow.setContent(this.content);
       infoWindow.open(map, marker);
-    });
-            
-            /**
-            google.maps.event.addListener(marker, 'click', (function(flag, i) {
-              return function() {
-                    let flag_marker = flag_dict[flag.id];
-                    let infowindowContent = document.getElementById('infowindow-content');
-                    infowindowContent.children['place-icon'].src = flag_marker["flag_icon"];
-                    infowindowContent.children['place-name'].textContent = flag_marker["flag_name"];
-                    infowindowContent.children['place-address'].textContent = flag_marker["flag_address"];
-                    document.getElementById('form-place-name').textContent = flag_marker["flag_name"];
-                    document.getElementById('form-place-address').textContent = flag_marker["flag_address"];
-                    document.getElementById('form-lat').textContent = flag_marker["flag_lat"];
-                    document.getElementById('form-long').textContent = flag_marker["flag_lng"];
-                    infoWindow.setContent(infowindowContent);
-                    if (infoWindowClosed = true) {
-                        infoWindow.open(map, marker);
-                        infoWindowClosed = false;
-                    } 
-              }
-            }
-            )(marker, i));
-        }
-};
-
-            */
+    });      
 }
+
 /*check if searched place is near the user (haversine formula), determines whether to let them report*/
 function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
   let rad = Math.PI / 180;
