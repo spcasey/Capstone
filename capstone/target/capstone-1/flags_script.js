@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//referenced in both this script and locations_script
+//global vars; referenced in both this script and locations_script 
 let map;
 let heatmap;
 let map_style;
@@ -19,7 +19,10 @@ let establishment_markers = [];
 let heatmap_data = [];
 let marker_dict = {};
 let flag_dict = {};
-let is_place_near_user = false;
+let user_lat;
+let user_lng;
+let DISTANCE_THRESHOLD_MILES = 15; //predetermined constant; max distance to be considered "close" to user
+let EARTH_RADIUS_MILES = 3958.8;
 
 /* Builds map object with zoom functionality */
 function generateMap() {
@@ -102,6 +105,14 @@ function generateMap() {
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
     infowindowContent.children['location'].textContent = place.geometry.location;
+    let close = isPlaceClose(user_lat, user_lng, 
+      place.geometry.location.lat(), place.geometry.location.lng());
+    console.log("close? " + close)
+    if(close === true){
+      infowindowContent.children['report'].style.display = 'inline-block';
+    }else{
+      infowindowContent.children['report'].style.display = 'none';
+    }
     localStorage.setItem("form-place-name", place.name);
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
@@ -145,32 +156,32 @@ async function getFlags() {
     createFlag(flags, i);
   }
 };
+
 /*physically create the markers*/
 function createFlag(flags, i) {
   var infoWindow = new google.maps.InfoWindow();
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
   var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
-    heatmap_data.push(myLatlng);
-    var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-      title: flags[i].name,
-      id: id,
-      content:'<div>' + '<span class="title">' + flags[i].name + 
-        '</span><br>' + '<span>' + flags[i].address + '</span>'
-      });
-      flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
-        'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
-        'place_lng': flags[i].lng
-      };   
-      var contentString = '<div>'+
-        '<span class="title">' + flags[i].name + '</span><br>' +
-          '<span>' + flags[i].address + '</span>';
-        marker.addListener('click', function() {
-          infoWindow.setContent(this.content);
-          infoWindow.open(map, marker);
-        });
+  heatmap_data.push(myLatlng);
+  var marker = new google.maps.Marker({
+    position: myLatlng,
+    map: map,
+    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    title: flags[i].name,
+    id: id,
+    content:'<div>' + '<span class="title">' + flags[i].name + 
+      '</span><br>' + '<span>' + flags[i].address + '</span>'
+    });
+    flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
+      'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
+      'place_lng': flags[i].lng
+    };   
+    var contentString = '<div>' + '<span class="title">' + flags[i].name + 
+      '</span><br>' + '<span>' + flags[i].address + '</span>';
+    marker.addListener('click', function() {
+      infoWindow.setContent(this.content);
+      infoWindow.open(map, marker);
+    });
             
             /**
             google.maps.event.addListener(marker, 'click', (function(flag, i) {
@@ -197,7 +208,22 @@ function createFlag(flags, i) {
 
             */
 }
- 
+
+/*check if searched place is near the user (haversine formula), determines whether to let them report*/
+function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
+  let rad = Math.PI / 180;
+  let dlat = (p2_lat - p1_lat) * rad;
+  let dlng = (p2_lng - p1_lng) * rad;
+  let dist = 2.0 * EARTH_RADIUS_MILES * Math.asin(
+    Math.sqrt(Math.sin(dlat / 2.0) * Math.sin(dlat / 2.0) + 
+    Math.cos(p1_lat * rad)*Math.cos(p2_lat * rad) * 
+    Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
+  console.log("Distance (mi): " + Math.floor(dist));
+  if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES){
+    return true;
+  }
+  return false;
+}
  
 
  

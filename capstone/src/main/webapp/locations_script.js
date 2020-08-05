@@ -83,6 +83,7 @@ function getCounties(){
 function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
   //getPlaces(latitude, longitude);
+  user_lat = latitude; user_lng = longitude;
   map.setCenter({lat: latitude, lng: longitude});
   getFlags();
 }

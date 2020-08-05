@@ -1,0 +1,57 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="submit_script.js"></script> 
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <title>Submit Data</title>
+  </head>
+  <body style="text-align: center;">
+    <!-- Navigation -->
+    <div id="navbar">
+    <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+        <div class="container-fluid">
+        <a class="navbar-brand" href="home.html"><img src="images/logo1.png"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a id="about" class="nav-link" href="about.html">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a id="about" class="nav-link" href="login.html">Login</a>
+            </li>
+            </ul> 
+        </div>
+        </div>
+    </nav>
+    </div>
+    <br>
+    <!--action="/data" method="POST"-->
+    <div style="display: inline-block;">
+      <p id="verify">Verify data</p>
+      <!-- <textarea readonly name="place-name" id="form-place-name" 
+        style="opacity:0;"></textarea>
+      <textarea readonly name="place-address" id="form-place-address"
+        style="opacity:0;"></textarea>
+      <textarea readonly name="lat" id="form-lat"
+        style="opacity:0;"></textarea>
+      <textarea readonly name="long" id="form-long"
+        style="opacity:0;"></textarea> -->
+      <p><input type="checkbox" name="agree" id="agree"> I verify that this data is accurate to the best of my knowledge.</p>
+      <br>
+      <div id="recaptcha" class="g-recaptcha" data-sitekey="6Ldzs7gZAAAAAFoQGftNMWNgBPioqza89720ppmw" 
+        style="display: inline-block;"></div>
+      <br>
+      <br>
+      <button class="btn btn-outline-danger" style="text-align:right" onclick="verifyInput();">Submit</button>
+      <!--<input class="btn btn-outline-danger" style="text-align:right"/>-->
+    </div>
+  </body>
+</html>
