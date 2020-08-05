@@ -13,8 +13,10 @@
 // limitations under the License.
 //referenced in both this script and locations_script
 let map;
+let heatmap;
 let map_style;
 let establishment_markers = [];
+let heatmap_data = [];
 let marker_dict = {};
 let flag_dict = {};
 let is_place_near_user = false;
@@ -34,6 +36,10 @@ function generateMap() {
   map.setOptions({
     minZoom: 12, 
     maxZoom: 18 //whats the max allowed by google maps??
+  });
+  heatmap = new google.maps.visualization.HeatmapLayer({
+    data: getPoints(),
+    map: map
   });
   //map.clearOverlays(); //clear markers
   let card = document.getElementById('pac-card');
@@ -108,7 +114,7 @@ function generateMap() {
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
-        infowindow.open(map, marker);
+      infowindow.open(map, marker);
     });
   });
  
@@ -125,8 +131,7 @@ function generateMap() {
   setupClickListener('changetype-establishment', ['establishment']);
   setupClickListener('changetype-geocode', ['geocode']);
  
-  document.getElementById('use-strict-bounds')
-  .addEventListener('click', function() {
+  document.getElementById('use-strict-bounds').addEventListener('click', function() {
     console.log('Checkbox clicked! New state=' + this.checked);
     autocomplete.setOptions({strictBounds: this.checked});
   });
@@ -134,42 +139,38 @@ function generateMap() {
  
 /* Populate the maps with flags. */
 async function getFlags() {
-    const response = await fetch('/data');
-    const flags = await response.json();
-        for (let i = 0; i < flags.length; i++) {
-            createFlag(flags, i);
-        }
+  const response = await fetch('/data');
+  const flags = await response.json();
+  for (let i = 0; i < flags.length; i++) {
+    createFlag(flags, i);
+  }
 };
-
+/*physically create the markers*/
 function createFlag(flags, i) {
-    var infoWindow = new google.maps.InfoWindow();
-    let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
-            var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
-            var marker = new google.maps.Marker({
-              position: myLatlng,
-              map: map,
-              icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-              title: flags[i].name,
-              id: id,
-              content:'<div>'+
-                '<span class="title">' + flags[i].name + '</span><br>' +
-                '<span>' + flags[i].address + '</span>'
-            });
-
-            flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
-              'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
-              'place_lng': flags[i].lng
-            };
-            
-            var contentString = '<div>'+
-                '<span class="title">' + flags[i].name + '</span><br>' +
-                '<span>' + flags[i].address + '</span>';
-
-
-            marker.addListener('click', function() {
-                infoWindow.setContent(this.content);
-                infoWindow.open(map, marker);
-            });
+  var infoWindow = new google.maps.InfoWindow();
+  let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
+  var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
+    heatmap_data.push(myLatlng);
+    var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      title: flags[i].name,
+      id: id,
+      content:'<div>' + '<span class="title">' + flags[i].name + 
+        '</span><br>' + '<span>' + flags[i].address + '</span>'
+      });
+      flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
+        'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
+        'place_lng': flags[i].lng
+      };   
+      var contentString = '<div>'+
+        '<span class="title">' + flags[i].name + '</span><br>' +
+          '<span>' + flags[i].address + '</span>';
+        marker.addListener('click', function() {
+          infoWindow.setContent(this.content);
+          infoWindow.open(map, marker);
+        });
             
             /**
             google.maps.event.addListener(marker, 'click', (function(flag, i) {

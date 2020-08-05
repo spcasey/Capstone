@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* Retrieves places based on a passed longitude and latitude */
+/* Retrieves places based on a passed longitude and latitude.*/
 /*function getPlaces(lat, lng){
   map.setCenter({lat: lat, lng: lng}); 
   console.log(lat + ', ' + lng);
