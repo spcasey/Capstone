@@ -20,9 +20,10 @@
   <script src="night_map.js"></script> 
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="login_script.js"></script>
+  <script src="heatmap_script.js"></script>
   <script src="day_map.js"></script> 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM&libraries=places&callback=generateMap"
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM&libraries=places,visualization&callback=generateMap"
         async defer></script>
 </head>
 
@@ -63,7 +64,7 @@
             <input type="radio" name="type" id="changetype-all" checked="checked">
             <label for="changetype-all">All</label>
 
-            <input type="radio" name="type" id="changetype-establishment">
+            <input type="radio" name="type" id="changetype-establishment" checked="checked">
             <label for="changetype-establishment">Establishments</label>
 
             <input type="radio" name="type" id="changetype-address">
@@ -109,10 +110,6 @@
       </div>
     </div>
   </div>
-
-<a href="#" onclick="testIsSignedIn();">isSignIn</a>
-<textarea id="test"></textarea>
-
 </body>
 
 </html>
