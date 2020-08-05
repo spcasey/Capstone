@@ -23,10 +23,7 @@ function checkLogin() {
         document.getElementById("sign_out").style.display = "none";
     } else {
         document.getElementById("report").style.display = "block";
-<<<<<<< HEAD
-=======
         document.getElementById("sign_in").style.display = "none";
->>>>>>> b6db0a2282bfd6a745837b5b7bec9b0a8fab90f1
     }
 }
 
