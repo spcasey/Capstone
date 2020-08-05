@@ -132,8 +132,10 @@ function generateMap() {
   });
 }
  
-/* Populate the maps with flags. */
+/* Populate the maps with flags from the data in datastore. */
 async function getFlags() {
+    checkLogin();
+    deleteExpiredFlags();
     const response = await fetch('/data');
     const flags = await response.json();
         for (let i = 0; i < flags.length; i++) {
@@ -141,6 +143,10 @@ async function getFlags() {
         }
 };
 
+/** Takes attributes such as lat and long from datastore
+  * and transfer the information to the map while initializing
+  * infowindows for the flags.
+ */
 function createFlag(flags, i) {
     var infoWindow = new google.maps.InfoWindow();
     let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
@@ -170,34 +176,16 @@ function createFlag(flags, i) {
                 infoWindow.setContent(this.content);
                 infoWindow.open(map, marker);
             });
-            
-            /**
-            google.maps.event.addListener(marker, 'click', (function(flag, i) {
-              return function() {
-                    let flag_marker = flag_dict[flag.id];
-                    let infowindowContent = document.getElementById('infowindow-content');
-                    infowindowContent.children['place-icon'].src = flag_marker["flag_icon"];
-                    infowindowContent.children['place-name'].textContent = flag_marker["flag_name"];
-                    infowindowContent.children['place-address'].textContent = flag_marker["flag_address"];
-                    document.getElementById('form-place-name').textContent = flag_marker["flag_name"];
-                    document.getElementById('form-place-address').textContent = flag_marker["flag_address"];
-                    document.getElementById('form-lat').textContent = flag_marker["flag_lat"];
-                    document.getElementById('form-long').textContent = flag_marker["flag_lng"];
-                    infoWindow.setContent(infowindowContent);
-                    if (infoWindowClosed = true) {
-                        infoWindow.open(map, marker);
-                        infoWindowClosed = false;
-                    } 
-              }
-            }
-            )(marker, i));
-        }
-};
+}
 
-            */
+/** Delete flags after the timestamp of the flags exceed
+  * 14 days from the current timestamp to ensure all the data
+  * is relevant.
+   */
+function deleteExpiredFlags() {
+    const params = new URLSearchParams;
+    fetch('/delete-flag', {method: 'POST', body: params});
 }
  
- 
-
  
  
