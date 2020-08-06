@@ -1,5 +1,5 @@
-/home/spcasey/Capstone/capstone/src/main/java/com/google/sps/data/Flag.java
-/home/spcasey/Capstone/capstone/src/main/java/com/google/sps/servlets/reCaptchaVerify.java
-/home/spcasey/Capstone/capstone/src/main/java/com/google/sps/servlets/DataServlet.java
-/home/spcasey/Capstone/capstone/src/main/java/com/google/sps/servlets/PlacesServlet.java
-/home/spcasey/Capstone/capstone/src/main/java/com/google/sps/data/User.java
+/home/lijer/Capstone/capstone/src/main/java/com/google/sps/data/Flag.java
+/home/lijer/Capstone/capstone/src/main/java/com/google/sps/servlets/PlacesServlet.java
+/home/lijer/Capstone/capstone/src/main/java/com/google/sps/servlets/reCaptchaVerify.java
+/home/lijer/Capstone/capstone/src/main/java/com/google/sps/data/User.java
+/home/lijer/Capstone/capstone/src/main/java/com/google/sps/servlets/DataServlet.java
