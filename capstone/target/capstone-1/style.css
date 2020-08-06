@@ -194,3 +194,7 @@ h5 {
 	position: relative;
 	top: 1px;
 }
+
+#dataVizMap {
+  height: 100%;
+}
