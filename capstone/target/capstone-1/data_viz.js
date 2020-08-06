@@ -13,9 +13,10 @@
 // limitations under the License.
 //referenced in both this script and locations_script
 
+/* Generates map for data visualization */
 function generateDataVizMap() {
   map = new google.maps.Map(document.getElementById("dataVizMap"), {
     center: { lat: 0, lng: 0 },
-    zoom: 3
+    zoom: 2.5
   });
 }

@@ -1,3 +1,4 @@
+
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
   console.log('ID: ' + profile.getId());
@@ -6,11 +7,11 @@ function onSignIn(googleUser) {
 }
 
 function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-    location.reload();
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
+  location.reload();
 }
 
 function isSignedIn() {
@@ -18,19 +19,19 @@ function isSignedIn() {
 }
 
 function checkLogin() {
-    if (!isSignedIn()) {
-        document.getElementById("report").style.display = "none";
-        document.getElementById("sign_out").style.display = "none";
-    } else {
-        document.getElementById("report").style.display = "block";
-        document.getElementById("sign_in").style.display = "none";
-    }
+  if (!isSignedIn()) {
+    document.getElementById("report").style.display = "none";
+    document.getElementById("sign_out").style.display = "none";
+  } else {
+    document.getElementById("report").style.display = "block";
+    document.getElementById("sign_in").style.display = "none";
+  }
 }
 
 function reload() {
-    setInterval(function() {
+  setInterval(function() {
     if(gapi.auth2.getAuthInstance().isSignedIn.get()) {
-        location.reload();
+      location.reload();
     }
-}, 1000);
+  }, 1000);
 }
