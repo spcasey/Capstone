@@ -55,7 +55,7 @@ public class PlacesServlet extends HttpServlet {
 	  reader.close();
       places_string = data.toString();
 	}else{
-	  //git request failed, send issue dictionary
+	  //get request failed, send issue dictionary
       places_string = "{\"error\": \"yes\"}";
 	}
     JSONObject json = new JSONObject(places_string);

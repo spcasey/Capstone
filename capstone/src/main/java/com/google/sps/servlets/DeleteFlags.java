@@ -37,12 +37,12 @@ import java.text.ParseException;
 /** Servlet responsible for deleting expired flags. */
 @WebServlet("/delete-flag")
 public class DeleteFlags extends HttpServlet {
-  
+
   private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+
     Query query = new Query("Flag").addSort("date", SortDirection.ASCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -70,4 +70,6 @@ public class DeleteFlags extends HttpServlet {
         }
     }
   }
+
 }
+

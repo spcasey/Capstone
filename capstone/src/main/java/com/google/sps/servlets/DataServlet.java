@@ -36,10 +36,11 @@ import java.text.ParseException;
 /*recieves user comment input and Datastores it*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  
+
+
   private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-  /** Takes in teh HTTP request and generates a Flag object to store
+  /** Takes in the HTTP request and generates a Flag object to store
     * into datastore. 
     */
   @Override
@@ -50,8 +51,7 @@ public class DataServlet extends HttpServlet {
     String lng = request.getParameter("long");
     Date currentDate = new Date();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    
-    
+
     if(lat.isEmpty() == false){
       Entity entry = new Entity("Flag");
       entry.setProperty("name", name);
@@ -68,6 +68,7 @@ public class DataServlet extends HttpServlet {
   /** Reads all the entities from the datastore and passes it back
     * as a json file to be converted into flags to be displayed on the map. 
     */
+
   @Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 

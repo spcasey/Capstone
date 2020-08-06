@@ -23,15 +23,13 @@ function isSignedIn() {
   return gapi.auth2.getAuthInstance().isSignedIn.get();
 }
 
-/** Hide the report button if the user does not sign in. Also
-  * hides the "sign-in"/"sign-out" buttons depending on the status
+
+/** Hides the "sign-in"/"sign-out" buttons depending on the status
   * of the user. */
 function checkLogin() {
     if (!isSignedIn()) {
-        document.getElementById("report").style.display = "none";
         document.getElementById("sign_out").style.display = "none";
     } else {
-        document.getElementById("report").style.display = "block";
         document.getElementById("sign_in").style.display = "none";
     }
 }
