@@ -64,9 +64,8 @@ public class DeleteFlags extends HttpServlet {
         Date flagDate = (Date)entity.getProperty("date");
         if (currentDateMinusTwoWeeks.compareTo(flagDate) > 0) {
             datastore.delete(entity.getKey());
-        }
-        if (currentDateMinusTwoWeeks.compareTo(flagDate) >= 0) {
-            break; //No need for additional checks since ordered by date
+        } else {
+            break;
         }
     }
   }
