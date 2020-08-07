@@ -108,7 +108,7 @@ function generateMap() {
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
     console.log("close? " + close)
-    if(close === true){
+    if(close === true && isSignedIn()){
       infowindowContent.children['report'].style.display = 'inline-block';
     }else{
       infowindowContent.children['report'].style.display = 'none';
@@ -143,8 +143,10 @@ function generateMap() {
   });
 }
  
-/* Populate the maps with flags. */
+/* Populate the maps with flags from the data in datastore. */
 async function getFlags() {
+  checkLogin(); //call function to hide login/logout buttons
+  deleteExpiredFlags(); //delete flags that are more 14 days old
   const response = await fetch('/data');
   const flags = await response.json();
   for (let i = 0; i < flags.length; i++) {
@@ -152,7 +154,10 @@ async function getFlags() {
   }
 };
 
-/*physically create the markers*/
+/** Takes attributes such as lat and long from datastore
+  * and transfer the information to the map while initializing
+  * infowindows for the flags.
+ */
 function createFlag(flags, i) {
   var infoWindow = new google.maps.InfoWindow();
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
@@ -194,7 +199,15 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
   }
   return false;
 }
- 
+
+/** Delete flags after the timestamp of the flags exceed
+  * 14 days from the current timestamp to ensure all the data
+  * is relevant.
+   */
+function deleteExpiredFlags() {
+    const params = new URLSearchParams;
+    fetch('/delete-flag', {method: 'POST', body: params});
+}
 
  
  

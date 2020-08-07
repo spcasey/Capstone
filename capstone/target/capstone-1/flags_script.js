@@ -108,7 +108,7 @@ function generateMap() {
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
     console.log("close? " + close)
-    if(close === true){
+    if(close === true && isSignedIn()){
       infowindowContent.children['report'].style.display = 'inline-block';
     }else{
       infowindowContent.children['report'].style.display = 'none';
@@ -117,11 +117,6 @@ function generateMap() {
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
-
-    /*document.getElementById('form-place-name').textContent = place.name;
-    document.getElementById('form-place-address').textContent = address;
-    document.getElementById('form-lat').textContent = place.geometry.location.lat();
-    document.getElementById('form-long').textContent = place.geometry.location.lng();*/
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
@@ -148,8 +143,10 @@ function generateMap() {
   });
 }
  
-/* Populate the maps with flags. */
+/* Populate the maps with flags from the data in datastore. */
 async function getFlags() {
+  checkLogin(); //call function to hide login/logout buttons
+  deleteExpiredFlags(); //delete flags that are more 14 days old
   const response = await fetch('/data');
   const flags = await response.json();
   for (let i = 0; i < flags.length; i++) {
@@ -157,7 +154,10 @@ async function getFlags() {
   }
 };
 
-/*physically create the markers*/
+/** Takes attributes such as lat and long from datastore
+  * and transfer the information to the map while initializing
+  * infowindows for the flags.
+ */
 function createFlag(flags, i) {
   var infoWindow = new google.maps.InfoWindow();
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
@@ -181,32 +181,7 @@ function createFlag(flags, i) {
     marker.addListener('click', function() {
       infoWindow.setContent(this.content);
       infoWindow.open(map, marker);
-    });
-            
-            /**
-            google.maps.event.addListener(marker, 'click', (function(flag, i) {
-              return function() {
-                    let flag_marker = flag_dict[flag.id];
-                    let infowindowContent = document.getElementById('infowindow-content');
-                    infowindowContent.children['place-icon'].src = flag_marker["flag_icon"];
-                    infowindowContent.children['place-name'].textContent = flag_marker["flag_name"];
-                    infowindowContent.children['place-address'].textContent = flag_marker["flag_address"];
-                    document.getElementById('form-place-name').textContent = flag_marker["flag_name"];
-                    document.getElementById('form-place-address').textContent = flag_marker["flag_address"];
-                    document.getElementById('form-lat').textContent = flag_marker["flag_lat"];
-                    document.getElementById('form-long').textContent = flag_marker["flag_lng"];
-                    infoWindow.setContent(infowindowContent);
-                    if (infoWindowClosed = true) {
-                        infoWindow.open(map, marker);
-                        infoWindowClosed = false;
-                    } 
-              }
-            }
-            )(marker, i));
-        }
-};
-
-            */
+    });      
 }
 
 /*check if searched place is near the user (haversine formula), determines whether to let them report*/
@@ -224,7 +199,15 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
   }
   return false;
 }
- 
+
+/** Delete flags after the timestamp of the flags exceed
+  * 14 days from the current timestamp to ensure all the data
+  * is relevant.
+   */
+function deleteExpiredFlags() {
+    const params = new URLSearchParams;
+    fetch('/delete-flag', {method: 'POST', body: params});
+}
 
  
  
