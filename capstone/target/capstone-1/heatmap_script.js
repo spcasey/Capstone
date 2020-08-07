@@ -42,8 +42,6 @@ function changeRadius() {
 
 /*dataset for heatmap. The more data points the more likely it will appear*/
 function getPoints() { 
-  console.log("heatmap data:")
-  console.log(heatmap_data)
   //for when we want to add weighting to verified users: {location: new google.maps.LatLng(37.782, -122.447), weight: 0.5},
-  return heatmap_data;
+  return heatmap_data_users; //from datastore, rather than nyt
 }

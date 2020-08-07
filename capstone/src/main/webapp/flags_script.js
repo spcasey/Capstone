@@ -16,19 +16,25 @@ let map;
 let heatmap;
 let map_style;
 let establishment_markers = [];
-let heatmap_data = [];
+let heatmap_data_users = [];
 let marker_dict = {};
 let flag_dict = {};
 let user_lat;
 let user_lng;
-let DISTANCE_THRESHOLD_MILES = 15; //predetermined constant; max distance to be considered "close" to user
+let sorted_report_counts;
+let total_reports_count = 0;
+let report_counts_dict = {};
+ 
+//constants 
+let DISTANCE_THRESHOLD_MILES = 15; //max distance to be considered "close" to user
 let EARTH_RADIUS_MILES = 3958.8;
+let SWITCH_HOUR = 18; //6:00 pm
 
 /* Builds map object with zoom functionality */
 function generateMap() {
   let time = new Date();
   map_style = day_map_style;
-  if (time.getHours() >= 18) { //18 : after 6:00 pm
+  if (time.getHours() >= SWITCH_HOUR) { 
     map_style = night_map_style;
   }
   map = new google.maps.Map(document.getElementById('map'), {
@@ -105,9 +111,9 @@ function generateMap() {
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
     infowindowContent.children['location'].textContent = place.geometry.location;
+    
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
-    console.log("close? " + close)
     if(close === true){
       infowindowContent.children['report'].style.display = 'inline-block';
     }else{
@@ -118,10 +124,6 @@ function generateMap() {
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
 
-    /*document.getElementById('form-place-name').textContent = place.name;
-    document.getElementById('form-place-address').textContent = address;
-    document.getElementById('form-lat').textContent = place.geometry.location.lat();
-    document.getElementById('form-long').textContent = place.geometry.location.lng();*/
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
@@ -152,21 +154,52 @@ function generateMap() {
 async function getFlags() {
   const response = await fetch('/data');
   const flags = await response.json();
+  total_reports_count = flags.length;
+  getPlaceCounts(flags);
   for (let i = 0; i < flags.length; i++) {
     createFlag(flags, i);
   }
 };
+
+/*sort flag data based on report count of places*/
+function getPlaceCounts(flags){
+  for (let i = 0; i < flags.length; i++) {
+    let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
+    if(report_counts_dict[id] === undefined){
+      report_counts_dict[id] = 1;
+    }else{
+      report_counts_dict[id] = report_counts_dict[id] + 1;
+    }
+  }   
+  sorted_report_counts = Object.keys(report_counts_dict).map(function(key_id) {
+    return [key_id, report_counts_dict[key_id]];
+  });
+  sorted_report_counts.sort(function(r1, r2) {
+    return r2[1] - r1[1];
+  });
+}
 
 /*physically create the markers*/
 function createFlag(flags, i) {
   var infoWindow = new google.maps.InfoWindow();
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
   var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
-  heatmap_data.push(myLatlng);
+  
+  heatmap_data_users.push(myLatlng);
+  //this color coding is meant for when there's a larger dataset quantity
+  let percentile = 100 - Math.round((getRank(id) / (total_reports_count + 1)) * 100);
+  let icon_link = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+  if(percentile >= 75){
+    icon_link = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+  }
+  else if(percentile >= 50){
+    icon_link = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+  }
+  
   var marker = new google.maps.Marker({
     position: myLatlng,
     map: map,
-    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    icon: icon_link,
     title: flags[i].name,
     id: id,
     content:'<div>' + '<span class="title">' + flags[i].name + 
@@ -182,32 +215,8 @@ function createFlag(flags, i) {
       infoWindow.setContent(this.content);
       infoWindow.open(map, marker);
     });
-            
-            /**
-            google.maps.event.addListener(marker, 'click', (function(flag, i) {
-              return function() {
-                    let flag_marker = flag_dict[flag.id];
-                    let infowindowContent = document.getElementById('infowindow-content');
-                    infowindowContent.children['place-icon'].src = flag_marker["flag_icon"];
-                    infowindowContent.children['place-name'].textContent = flag_marker["flag_name"];
-                    infowindowContent.children['place-address'].textContent = flag_marker["flag_address"];
-                    document.getElementById('form-place-name').textContent = flag_marker["flag_name"];
-                    document.getElementById('form-place-address').textContent = flag_marker["flag_address"];
-                    document.getElementById('form-lat').textContent = flag_marker["flag_lat"];
-                    document.getElementById('form-long').textContent = flag_marker["flag_lng"];
-                    infoWindow.setContent(infowindowContent);
-                    if (infoWindowClosed = true) {
-                        infoWindow.open(map, marker);
-                        infoWindowClosed = false;
-                    } 
-              }
-            }
-            )(marker, i));
-        }
-};
-
-            */
 }
+
 /*check if searched place is near the user (haversine formula), determines whether to let them report*/
 function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
   let rad = Math.PI / 180;
@@ -217,13 +226,24 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
     Math.sqrt(Math.sin(dlat / 2.0) * Math.sin(dlat / 2.0) + 
     Math.cos(p1_lat * rad)*Math.cos(p2_lat * rad) * 
     Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
-  console.log("Distance (mi): " + Math.floor(dist));
   if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES){
     return true;
   }
   return false;
 }
  
+/*determines which places have most cases relative to whole database
+  currently doesn't account for if place is close to user*/
+function getRank(id){
+  let rank = 0;
+  for(let k = 0; k < sorted_report_counts.length; k++){
+    if(id === sorted_report_counts[k][0]){
+      rank = k + 1;
+      break;
+    }
+  }
+  return rank;
+}
 
  
  

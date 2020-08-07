@@ -1,9 +1,11 @@
+let SWITCH_HOUR = 18;
+
 window.onload = function(){
   if(localStorage.getItem("prev_page") !== "home"){
     window.location.href = 'home.html';
   }
   let time = new Date();
-  if(time.getHours() >= 18){ //18: after 6:00 pm
+  if(time.getHours() >= SWITCH_HOUR){ 
     document.body.style.backgroundColor = '#614051';
     document.body.style.color = '#fff';
   }
