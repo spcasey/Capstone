@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* Switches heat map on and off. */
+/* Switches heatmap on and off. */
 function toggleHeatmap() {
   heatmap.setMap(heatmap.getMap() ? null : map);
 }
 
-/* Builds color coding for heat map. */
+/* Builds color coding for heatmap. */
 function changeGradient() {
   const gradient = [
     "rgba(0, 255, 255, 0)",
@@ -38,16 +38,21 @@ function changeGradient() {
   heatmap.set("gradient", heatmap.get("gradient") ? null : gradient);
 }
 
-/* Sets pixel radius of each heatmap parts. */
+/* Sets pixel radius of heatmap components. */
 function changeRadius() {
   heatmap.set("radius", heatmap.get("radius") ? null : 60);
 }
 
-/* Returns dataset for heatmap. The more data points there are,
-   the more likely it will appear. */
+/* Sets opacity of heatmap components. */
+function changeOpacity() {
+  heatmap.set("opacity", heatmap.get("opacity") ? null : 0.2);
+}
+
+/* Returns dataset for heatmap. The more data points there are in an area, 
+  the darker the gradient in that area will be. */
 function getPoints() { 
-  console.log("heatmap data:")
-  console.log(heatmap_data)
+  console.log("heatmap data:");
+  console.log(heatmap_data);
 
   // For when we want to add weighting to verified users: {location: new google.maps.LatLng(37.782, -122.447), weight: 0.5}
   return heatmap_data;
