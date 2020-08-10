@@ -49,11 +49,13 @@ public class DataServlet extends HttpServlet {
     String address = request.getParameter("place-address");
     String lat = request.getParameter("lat");
     String lng = request.getParameter("long");
+    String userId = request.getParameter("userId");
     Date currentDate = new Date();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     if(lat.isEmpty() == false){
       Entity entry = new Entity("Flag");
+      entry.setProperty("userId", userId);
       entry.setProperty("name", name);
       entry.setProperty("address", address);
       entry.setProperty("lat", lat);
@@ -80,13 +82,14 @@ public class DataServlet extends HttpServlet {
 		ArrayList <Flag> flags = new ArrayList < >();
 		for (Entity entity: results.asIterable()) {
 			long id = entity.getKey().getId();
+            String userId = (String) entity.getProperty("userId");
 			String name = (String) entity.getProperty("name");
             String address = (String) entity.getProperty("address");
             String lat = (String) entity.getProperty("lat");
             String lng = (String) entity.getProperty("long");
 			Date date = (Date) entity.getProperty("date");
 
-			Flag flag = new Flag(id, name, address, lat, lng, date);
+			Flag flag = new Flag(id, userId, name, address, lat, lng, date);
 			flags.add(flag);
 		}
 		Gson gson = new Gson();

@@ -117,6 +117,7 @@ function generateMap() {
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
+    localStorage.setItem("form-userId", String(getUserId()));
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
@@ -163,25 +164,29 @@ function createFlag(flags, i) {
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
   var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
   heatmap_data.push(myLatlng);
+  let userId = flags[i].userId;
   var marker = new google.maps.Marker({
     position: myLatlng,
     map: map,
     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
     title: flags[i].name,
     id: id,
-    content:'<div>' + '<span class="title">' + flags[i].name + 
+    contentForUserWhoFlagged: '<span class="title">' + flags[i].name + 
+      '</span><br>' + '<span>' + flags[i].address + '</span>' +
+      '<br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
+      + 'onclick=deleteUserFlag(' + flags[i].id + ')>Delete</button></div>',
+    content:'<span class="title">' + flags[i].name + 
       '</span><br>' + '<span>' + flags[i].address + '</span>'
     });
-    flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
-      'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
-      'place_lng': flags[i].lng
-    };   
-    var contentString = '<div>' + '<span class="title">' + flags[i].name + 
-      '</span><br>' + '<span>' + flags[i].address + '</span>';
-    marker.addListener('click', function() {
-      infoWindow.setContent(this.content);
+  marker.addListener('click', function() {
+      if (getUserId() === userId) {
+          infoWindow.setContent(this.contentForUserWhoFlagged);
+      } else {
+          infoWindow.setContent(this.content);
+      }
       infoWindow.open(map, marker);
-    });      
+    }); 
+    
 }
 
 /*check if searched place is near the user (haversine formula), determines whether to let them report*/
@@ -207,6 +212,14 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
 function deleteExpiredFlags() {
     const params = new URLSearchParams;
     fetch('/delete-flag', {method: 'POST', body: params});
+}
+
+/** Delete flags that the current user reported. */
+function deleteUserFlag(id) {
+  const params = new URLSearchParams;
+  params.append('flagId', id);
+  fetch('/deleteUserFlag', {method: 'POST', body: params});
+  location.reload();
 }
 
  
