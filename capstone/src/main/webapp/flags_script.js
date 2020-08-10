@@ -104,7 +104,6 @@ function generateMap() {
     infowindowContent.children['place-icon'].src = place.icon;
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
-    infowindowContent.children['location'].textContent = place.geometry.location;
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
     console.log("close? " + close)
@@ -171,12 +170,12 @@ function createFlag(flags, i) {
     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
     title: flags[i].name,
     id: id,
-    contentForUserWhoFlagged: '<span class="title">' + flags[i].name + 
+    contentForUserWhoFlagged: '<div class="padding"><span class="title">' + flags[i].name + 
       '</span><br>' + '<span>' + flags[i].address + '</span>' +
-      '<br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
-      + 'onclick=deleteUserFlag(' + flags[i].id + ')>Delete</button></div>',
-    content:'<span class="title">' + flags[i].name + 
-      '</span><br>' + '<span>' + flags[i].address + '</span>'
+      '<br><br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
+      + 'onclick=deleteUserFlag(' + flags[i].id + ')>Delete</button></div></div>',
+    content:'<div class="padding"><span class="title">' + flags[i].name + 
+      '</span><br><br>' + '<span>' + flags[i].address + '</span></div>'
     });
   marker.addListener('click', function() {
       if (getUserId() === userId) {
