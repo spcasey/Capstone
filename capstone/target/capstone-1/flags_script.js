@@ -195,7 +195,7 @@ function createFlag(flags, i) {
   else if(percentile >= 50){
     icon_link = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
   }
-  console.log("count: "+report_counts_dict[id]+", percentile: "+percentile+", rank: "+getRank(id))
+  
   var marker = new google.maps.Marker({
     position: myLatlng,
     map: map,
@@ -226,7 +226,6 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
     Math.sqrt(Math.sin(dlat / 2.0) * Math.sin(dlat / 2.0) + 
     Math.cos(p1_lat * rad)*Math.cos(p2_lat * rad) * 
     Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
-  console.log("Distance (mi): " + Math.floor(dist));
   if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES){
     return true;
   }

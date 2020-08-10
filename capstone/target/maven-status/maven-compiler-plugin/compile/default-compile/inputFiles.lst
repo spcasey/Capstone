@@ -1,4 +1,5 @@
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/servlets/PlacesServlet.java
+/home/micyohan/Capstone/capstone/src/main/java/com/google/sps/servlets/getNYTDataServlet.java
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/servlets/reCaptchaVerify.java
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/data/Flag.java
 /home/micyohan/Capstone/capstone/src/main/java/com/google/sps/servlets/DataServlet.java
