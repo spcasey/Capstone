@@ -27,8 +27,7 @@
   <script src="heatmap_script.js"></script>
 </head>
 
-<body>
-
+<body style="overflow:hidden">
   <!-- Navigation -->
   <div id="navbar">
   <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
@@ -58,7 +57,7 @@
             <div class="g-signin2" data-onsuccess="onSignIn" onclick="reload();"></div>
           </li>
           <li id="sign_out" class="nav-item">
-            <a href="#" onclick="signOut();">Sign out</a>
+            <a href="#" onclick="signOut();"style="position:relative" style="height:100%">Sign out</a>
           </li>
         </ul> 
      
@@ -97,7 +96,7 @@
           </div>
         </div>
 
-        <div id="map"></div>
+        <div id="map" style="position:relative" style="height:100%" style="width:100%"></div>
 
         <div id="infowindow-content">
           <img src="" width="16" height="16" id="place-icon">
@@ -112,6 +111,5 @@
       </div>
     </div>
   </div>
-  
 </body>
 </html>

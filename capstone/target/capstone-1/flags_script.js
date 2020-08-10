@@ -43,7 +43,7 @@ function generateMap() {
   });
   map.setOptions({
     minZoom: 12, 
-    maxZoom: 18 //whats the max allowed by google maps??
+    maxZoom: 18 
   });
   heatmap = new google.maps.visualization.HeatmapLayer({
     data: getPoints(),

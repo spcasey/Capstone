@@ -11,17 +11,30 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+let nyt_data = {};
+let nyt_data_by_state = {};
+getCounties();
+
+let land_color = '#fcfcfc';
+let water_color = '#bfd4ff';
+let SWITCH_HOUR = 18; //6:00 pm
+
+let time = new Date();
+if(time.getHours() >= SWITCH_HOUR){ 
+  land_color = '#023e58';
+  water_color = '#0e1626';
+}
 
 var mapStyle = [{
     'stylers': [{'visibility': 'off'}]
   }, {
     'featureType': 'landscape',
     'elementType': 'geometry',
-    'stylers': [{'visibility': 'on'}, {'color': '#fcfcfc'}]
+    'stylers': [{'visibility': 'on'}, {'color': land_color}]
   }, {
     'featureType': 'water',
     'elementType': 'geometry',
-    'stylers': [{'visibility': 'on'}, {'color': '#bfd4ff'}]
+    'stylers': [{'visibility': 'on'}, {'color': water_color}]
 }];
       
 var map;
@@ -156,8 +169,12 @@ function mouseInToRegion(e) {
 
   var percent = (e.feature.getProperty('input_variable') - min) / (max - min) * 100;
 
+  let state_name = e.feature.getProperty('NAME');
   // Update the label
-  document.getElementById('data-label').textContent = e.feature.getProperty('NAME');
+  document.getElementById('data-label').textContent = state_name;
+  consolidateDataState(state_name)
+  console.log("input")
+  console.log(e.feature.getProperty('input_variable').toLocaleString());
   document.getElementById('data-value').textContent = e.feature.getProperty('input_variable').toLocaleString();
   document.getElementById('data-box').style.display = 'block';
   document.getElementById('data-caret').style.display = 'block';
@@ -168,4 +185,57 @@ function mouseInToRegion(e) {
 function mouseOutOfRegion(e) {
   // Reset the hover state, returning the border to normal
   e.feature.setProperty('state', 'normal');
+}
+
+/* get County data from NYT in the form of a dictionary to put on the graph*/
+//date,county,state,fips,cases,deaths,confirmed_cases,confirmed_deaths,probable_cases,probable_deaths
+function getCounties(){
+  fetch('/getCountyData').then(response => response.text()).then((output) => {
+    let data_lines = JSON.parse(output);
+    for(let i = 0; i < data_lines.length; i++){
+      if(data_lines[i] !== null){
+        let parsed_data = data_lines[i].split(',');
+        if(parsed_data.length === 10){
+          let date = parsed_data[0];
+          let county = parsed_data[1];
+          let state = parsed_data[2];
+          let fips = parsed_data[3];
+          let cases = parsed_data[4];
+          let deaths = parsed_data[5];
+          let confirmed_cases = parsed_data[6];
+          let confirmed_deaths = parsed_data[7];
+          let probable_cases = parsed_data[8];
+          let probable_deaths = parsed_data[9];
+          let key = county + '-' + fips;
+          //note that there may be blank '' attributes
+          let county_data = {"date": date, "state": state, "fips": fips, "cases": cases,
+            "deaths": deaths, "confirmed_cases": confirmed_cases, "confirmed_deaths": confirmed_deaths, 
+            "probable_cases": probable_cases, "probable_deaths": probable_deaths};
+          nyt_data[key] = county_data;
+          county_data["county"] = county;
+          county_data["fips"] = fips;
+          if(nyt_data_by_state[state] !== undefined){
+            nyt_data_by_state[state].push(county_data);  
+          }else{
+            nyt_data_by_state[state] = [];
+          }
+        }
+      }
+    }
+    console.log(nyt_data);
+    console.log(nyt_data_by_state);
+  });
+}
+/* sum the data for the each of the counties in the state to estimate statewide cases */
+function consolidateDataState(state){
+  let cases_count = 0;
+  let counties = nyt_data_by_state[state];
+  for(let i = 0; i < counties.length; i++){
+    let cases = parseInt(counties[i].cases);
+    if(cases !== NaN){
+      cases_count += cases;
+    }
+  }
+  console.log("cases: ")
+  console.log(cases_count)
 }
