@@ -1,15 +1,20 @@
+var userId;
+
 /** Logs the user basic info on the console once the users 
   * sign in. */
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId());
-  console.log('Name: ' + profile.getName());
-  console.log('Email: ' + profile.getEmail());
+  userId = profile.getEmail();
+}
+
+function getUserId() {
+    return userId;
 }
 
 /** Google Sign In API default function for signing users 
   * out. Logs that the user signed out on console. */
 function signOut() {
+    userId = null;
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
       console.log('User signed out.');

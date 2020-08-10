@@ -6,14 +6,16 @@ import java.util.Date;
 public final class Flag {
 
   private final long id;
+  private final String userId;
   public final String name;
   private final String address;
   public final String lat;
   public final String lng;
   private final Date date;
 
-  public Flag(long id, String name, String address, String lat, String lng, Date date) {
+  public Flag(long id, String userId, String name, String address, String lat, String lng, Date date) {
     this.id = id;
+    this.userId = userId;
     this.name = name;
     this.address = address;
     this.lat = lat;

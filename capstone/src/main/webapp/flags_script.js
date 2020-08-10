@@ -117,6 +117,7 @@ function generateMap() {
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
+    localStorage.setItem("form-userId", String(getUserId()));
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
