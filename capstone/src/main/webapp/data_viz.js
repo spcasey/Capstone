@@ -172,9 +172,6 @@ function mouseInToRegion(e) {
   let state_name = e.feature.getProperty('NAME');
   // Update the label
   document.getElementById('data-label').textContent = state_name;
-  consolidateDataState(state_name)
-  console.log("input")
-  console.log(e.feature.getProperty('input_variable').toLocaleString());
   document.getElementById('data-value').textContent = e.feature.getProperty('input_variable').toLocaleString();
   document.getElementById('data-box').style.display = 'block';
   document.getElementById('data-caret').style.display = 'block';
@@ -227,7 +224,7 @@ function getCounties(){
   });
 }
 /* sum the data for the each of the counties in the state to estimate statewide cases */
-function consolidateDataState(state){
+function consolidateDataForState(state){
   let cases_count = 0;
   let counties = nyt_data_by_state[state];
   for(let i = 0; i < counties.length; i++){
