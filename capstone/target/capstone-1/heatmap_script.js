@@ -11,11 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-/*set up heatmap*/
+
+/* Switches heatmap on and off. */
 function toggleHeatmap() {
   heatmap.setMap(heatmap.getMap() ? null : map);
 }
-/*color coding for the heatmap display*/
+
+/* Builds color coding for heatmap. */
 function changeGradient() {
   const gradient = [
     "rgba(0, 255, 255, 0)",
@@ -35,11 +37,19 @@ function changeGradient() {
   ];
   heatmap.set("gradient", heatmap.get("gradient") ? null : gradient);
 }
-/*set pixel radius of each heatmap part. Max is 60*/
+
+/* Sets pixel radius of heatmap components. */
 function changeRadius() {
   heatmap.set("radius", heatmap.get("radius") ? null : 60);
 }
 
+/* Sets opacity of heatmap components. */
+function changeOpacity() {
+  heatmap.set("opacity", heatmap.get("opacity") ? null : 0.2);
+}
+
+/* Returns dataset for heatmap. The more data points there are in an area, 
+  the darker the gradient in that area will be. */
 /*dataset for heatmap. The more data points the more likely it will appear*/
 function getPoints() { 
   //for when we want to add weighting to verified users: {location: new google.maps.LatLng(37.782, -122.447), weight: 0.5},
