@@ -170,6 +170,7 @@ function mouseInToRegion(e) {
   var percent = (e.feature.getProperty('input_variable') - min) / (max - min) * 100;
 
   let state_name = e.feature.getProperty('NAME');
+  //let cases_count = consolidateDataForState(state_name);
   // Update the label
   document.getElementById('data-label').textContent = state_name;
   document.getElementById('data-value').textContent = e.feature.getProperty('input_variable').toLocaleString();
@@ -233,6 +234,5 @@ function consolidateDataForState(state){
       cases_count += cases;
     }
   }
-  console.log("cases: ")
-  console.log(cases_count)
+  return cases_count;
 }
