@@ -1,3 +1,4 @@
+/** Global variable to store the email for current user. */
 var userId;
 
 /** Logs the user basic info on the console once the users 
@@ -7,6 +8,7 @@ function onSignIn(googleUser) {
   userId = profile.getEmail();
 }
 
+/** Function for submit_script to access USERID. */
 function getUserId() {
     return userId;
 }

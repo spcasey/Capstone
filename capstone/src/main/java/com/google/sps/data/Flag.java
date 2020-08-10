@@ -5,8 +5,8 @@ import java.util.Date;
 /** An item of a Flag. */
 public final class Flag {
 
-  private final long id;
-  private final String userId;
+  public final long id;
+  public final String userId;
   public final String name;
   private final String address;
   public final String lat;
