@@ -29,7 +29,8 @@ function verifyInput(){
           localStorage.setItem("prev_page", "");
           let data_link = '/data?place-name=' + localStorage.getItem('form-place-name') + 
             '&place-address=' + localStorage.getItem('form-place-address') + '&lat=' + 
-          localStorage.getItem('form-lat') + '&long=' + localStorage.getItem('form-long');
+          localStorage.getItem('form-lat') + '&long=' + localStorage.getItem('form-long') 
+          + '&userId=' + localStorage.getItem('form-userId');
           $.ajax({
             type : 'POST',
             data: '', 

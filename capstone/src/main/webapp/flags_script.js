@@ -11,7 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+<<<<<<< HEAD
 
+=======
+//global vars; referenced in both this script and locations_script 
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 let map;
 let heatmap;
 let map_style;
@@ -19,7 +23,10 @@ let establishment_markers = [];
 let heatmap_data = [];
 let marker_dict = {};
 let flag_dict = {};
-let is_place_near_user = false;
+let user_lat;
+let user_lng;
+let DISTANCE_THRESHOLD_MILES = 15; //predetermined constant; max distance to be considered "close" to user
+let EARTH_RADIUS_MILES = 3958.8;
 
 /* Builds map object with zoom functionality. */
 function generateMap() {
@@ -108,11 +115,23 @@ function generateMap() {
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
     infowindowContent.children['location'].textContent = place.geometry.location;
+    let close = isPlaceClose(user_lat, user_lng, 
+      place.geometry.location.lat(), place.geometry.location.lng());
+    console.log("close? " + close)
+    if(close === true && isSignedIn()){
+      infowindowContent.children['report'].style.display = 'inline-block';
+    }else{
+      infowindowContent.children['report'].style.display = 'none';
+    }
     localStorage.setItem("form-place-name", place.name);
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
+<<<<<<< HEAD
 
+=======
+    localStorage.setItem("form-userId", String(getUserId()));
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
@@ -139,8 +158,14 @@ function generateMap() {
   });
 }
  
+<<<<<<< HEAD
 /* Populates the map with flags. */
+=======
+/* Populate the maps with flags from the data in datastore. */
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 async function getFlags() {
+  checkLogin(); //call function to hide login/logout buttons
+  deleteExpiredFlags(); //delete flags that are more 14 days old
   const response = await fetch('/data');
   const flags = await response.json();
   for (let i = 0; i < flags.length; i++) {
@@ -148,18 +173,30 @@ async function getFlags() {
   }
 };
 
+<<<<<<< HEAD
 /* Builds each individual flag. */
+=======
+/** Takes attributes such as lat and long from datastore
+  * and transfer the information to the map while initializing
+  * infowindows for the flags.
+ */
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 function createFlag(flags, i) {
   var infoWindow = new google.maps.InfoWindow();
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
   var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
   heatmap_data.push(myLatlng);
+<<<<<<< HEAD
+=======
+  let userId = flags[i].userId;
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
   var marker = new google.maps.Marker({
     position: myLatlng,
     map: map,
     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
     title: flags[i].name,
     id: id,
+<<<<<<< HEAD
     content:'<div>' + '<span class="title">' + flags[i].name + 
     '</span><br>' + '<span>' + flags[i].address + '</span>'
   });
@@ -175,9 +212,58 @@ function createFlag(flags, i) {
     infoWindow.setContent(this.content);
     infoWindow.open(map, marker);
   });
+=======
+    contentForUserWhoFlagged: '<span class="title">' + flags[i].name + 
+      '</span><br>' + '<span>' + flags[i].address + '</span>' +
+      '<br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
+      + 'onclick=deleteUserFlag(' + flags[i].id + ')>Delete</button></div>',
+    content:'<span class="title">' + flags[i].name + 
+      '</span><br>' + '<span>' + flags[i].address + '</span>'
+    });
+  marker.addListener('click', function() {
+      if (getUserId() === userId) {
+          infoWindow.setContent(this.contentForUserWhoFlagged);
+      } else {
+          infoWindow.setContent(this.content);
+      }
+      infoWindow.open(map, marker);
+    }); 
+    
 }
- 
- 
+
+/*check if searched place is near the user (haversine formula), determines whether to let them report*/
+function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
+  let rad = Math.PI / 180;
+  let dlat = (p2_lat - p1_lat) * rad;
+  let dlng = (p2_lng - p1_lng) * rad;
+  let dist = 2.0 * EARTH_RADIUS_MILES * Math.asin(
+    Math.sqrt(Math.sin(dlat / 2.0) * Math.sin(dlat / 2.0) + 
+    Math.cos(p1_lat * rad)*Math.cos(p2_lat * rad) * 
+    Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
+  console.log("Distance (mi): " + Math.floor(dist));
+  if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES){
+    return true;
+  }
+  return false;
+}
+
+/** Delete flags after the timestamp of the flags exceed
+  * 14 days from the current timestamp to ensure all the data
+  * is relevant.
+   */
+function deleteExpiredFlags() {
+    const params = new URLSearchParams;
+    fetch('/delete-flag', {method: 'POST', body: params});
+}
+
+/** Delete flags that the current user reported. */
+function deleteUserFlag(id) {
+  const params = new URLSearchParams;
+  params.append('flagId', id);
+  fetch('/deleteUserFlag', {method: 'POST', body: params});
+  location.reload();
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
+}
 
  
  

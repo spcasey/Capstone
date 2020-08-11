@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="overflow:hidden">
 <!-- Styling using Bootstrap and other libraries -->
 <head>
   <title>COVID Tracker</title>
@@ -27,8 +27,12 @@
   <script src="heatmap_script.js"></script>
 </head>
 
+<<<<<<< HEAD
 <body>
 
+=======
+<body style="overflow:hidden">
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
   <!-- Navigation -->
   <div id="navbar">
   <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
@@ -58,7 +62,7 @@
             <div class="g-signin2" data-onsuccess="onSignIn" onclick="reload();"></div>
           </li>
           <li id="sign_out" class="nav-item">
-            <a href="#" onclick="signOut();">Sign out</a>
+            <a href="#" onclick="signOut();"style="position:relative" style="height:100%">Sign out</a>
           </li>
         </ul> 
      
@@ -97,7 +101,7 @@
           </div>
         </div>
 
-        <div id="map"></div>
+        <div id="map" style="position:relative" style="height:100%" style="width:100%"></div>
 
         <div id="infowindow-content">
           <img src="" width="16" height="16" id="place-icon">
@@ -105,13 +109,17 @@
           <span id="place-address"></span>
           <span id="location"></span>
           <br>
-          <button id="report" class="btn btn-outline-danger" style="text-align:right" 
+          <button id="report" class="btn btn-outline-danger" style="text-align:right;" 
             onclick="window.location.href='submit_data.html'">Report</button>
         </div>
         
       </div>
     </div>
   </div>
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 </body>
 </html>
