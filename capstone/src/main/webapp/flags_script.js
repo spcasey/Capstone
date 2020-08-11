@@ -11,11 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-<<<<<<< HEAD
 
-=======
 //global vars; referenced in both this script and locations_script 
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
+
 let map;
 let heatmap;
 let map_style;
@@ -114,7 +112,6 @@ function generateMap() {
     infowindowContent.children['place-icon'].src = place.icon;
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
-    infowindowContent.children['location'].textContent = place.geometry.location;
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
     console.log("close? " + close)
@@ -127,11 +124,7 @@ function generateMap() {
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
-<<<<<<< HEAD
-
-=======
     localStorage.setItem("form-userId", String(getUserId()));
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
@@ -158,11 +151,8 @@ function generateMap() {
   });
 }
  
-<<<<<<< HEAD
-/* Populates the map with flags. */
-=======
+
 /* Populate the maps with flags from the data in datastore. */
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 async function getFlags() {
   checkLogin(); //call function to hide login/logout buttons
   deleteExpiredFlags(); //delete flags that are more 14 days old
@@ -173,52 +163,31 @@ async function getFlags() {
   }
 };
 
-<<<<<<< HEAD
-/* Builds each individual flag. */
-=======
+
 /** Takes attributes such as lat and long from datastore
   * and transfer the information to the map while initializing
   * infowindows for the flags.
  */
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 function createFlag(flags, i) {
   var infoWindow = new google.maps.InfoWindow();
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
   var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
   heatmap_data.push(myLatlng);
-<<<<<<< HEAD
-=======
+
   let userId = flags[i].userId;
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
   var marker = new google.maps.Marker({
     position: myLatlng,
     map: map,
     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
     title: flags[i].name,
     id: id,
-<<<<<<< HEAD
-    content:'<div>' + '<span class="title">' + flags[i].name + 
-    '</span><br>' + '<span>' + flags[i].address + '</span>'
-  });
 
-  flag_dict[id] = {'flag_icon': flags[i].icon, 'flag_name': flags[i].name,
-    'flag_address': flags[i].address, 'flag_lat': flags[i].lat, 
-    'place_lng': flags[i].lng
-  };   
-      
-  var contentString = '<div>'+'<span class="title">' + flags[i].name + '</span><br>' +
-    '<span>' + flags[i].address + '</span>';
-  marker.addListener('click', function() {
-    infoWindow.setContent(this.content);
-    infoWindow.open(map, marker);
-  });
-=======
-    contentForUserWhoFlagged: '<span class="title">' + flags[i].name + 
+    contentForUserWhoFlagged: '<div class="padding"><span class="title">' + flags[i].name + 
       '</span><br>' + '<span>' + flags[i].address + '</span>' +
-      '<br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
-      + 'onclick=deleteUserFlag(' + flags[i].id + ')>Delete</button></div>',
-    content:'<span class="title">' + flags[i].name + 
-      '</span><br>' + '<span>' + flags[i].address + '</span>'
+      '<br><br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
+      + 'onclick=deleteUserFlag(' + flags[i].id + ')>Delete</button></div></div>',
+    content:'<div class="padding"><span class="title">' + flags[i].name + 
+      '</span><br><br>' + '<span>' + flags[i].address + '</span></div>'
     });
   marker.addListener('click', function() {
       if (getUserId() === userId) {
@@ -262,7 +231,6 @@ function deleteUserFlag(id) {
   params.append('flagId', id);
   fetch('/deleteUserFlag', {method: 'POST', body: params});
   location.reload();
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 }
 
  

@@ -10,6 +10,7 @@ var userId;
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
   userId = profile.getEmail();
+  document.getElementById("signOutButton").addEventListener("click", signOut);
 }
 
 /** Function for submit_script to access USERID. */
