@@ -2,8 +2,11 @@
 
 /* Style entire website */
 html, body {
-  height: 100%;
   width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x:hidden;
   color: #222;
   font-family: 'Noto Sans JP', sans-serif;
 }
@@ -22,14 +25,7 @@ html, body {
 }
 
 .padding {
-  padding-bottom: 2rem;
-}
-
-/* Style welcome section */
-.welcome {
-  width: 75%;
-  margin: 0 auto;
-  padding-top: 2rem;
+  padding: .5rem;
 }
 
 .welcome hr {
@@ -86,11 +82,11 @@ h5 {
 /* Sets the map height */
 #map {
   position: relative;
-  height: 90%;
+  height: 94%;
 }
 
 #description {
-  font-family: Roboto;
+  font-family: 'Noto Sans JP', sans-serif;
   font-size: 15px;
   font-weight: 300;
 }
@@ -107,6 +103,19 @@ h5 {
   display: inline;
 }
 
+.title {
+    font-size: 20px;
+    line-height: 23px;
+}
+
+.col-12 {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x:hidden;
+}
+
 .pac-card {
   margin: 10px 10px 0 0;
   border-radius: 2px 0 0 2px;
@@ -115,8 +124,9 @@ h5 {
   outline: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   background-color: #fff;
-  font-family: Roboto;
+  font-family: 'Noto Sans JP', sans-serif;
 }
+
 
 #pac-container {
   padding-bottom: 12px;
@@ -129,14 +139,14 @@ h5 {
 }
 
 .pac-controls label {
-  font-family: Roboto;
+  font-family: 'Noto Sans JP', sans-serif;
   font-size: 13px;
   font-weight: 300;
 }
 
 #pac-input {
   background-color: #fff;
-  font-family: Roboto;
+  font-family: 'Noto Sans JP', sans-serif;
   font-size: 15px;
   font-weight: 300;
   margin-left: 12px;
@@ -146,15 +156,15 @@ h5 {
 }
 
 #pac-input:focus {
-  border-color: #4d90fe;
+  border-color: #111;
 }
 
 #pac {
   color: #fff;
-  background-color: #4d90fe;
   font-size: 25px;
   font-weight: 500;
   padding: 6px 12px;
+  font-family: 'Noto Sans JP', sans-serif;
 }
 
 .index-page{
