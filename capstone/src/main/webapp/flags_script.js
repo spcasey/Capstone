@@ -11,7 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 //global vars; referenced in both this script and locations_script 
+
 let map;
 let heatmap;
 let map_style;
@@ -24,27 +26,32 @@ let user_lng;
 let DISTANCE_THRESHOLD_MILES = 15; //predetermined constant; max distance to be considered "close" to user
 let EARTH_RADIUS_MILES = 3958.8;
 
-/* Builds map object with zoom functionality */
+/* Builds map object with zoom functionality. */
 function generateMap() {
   let time = new Date();
   map_style = day_map_style;
-  if (time.getHours() >= 18) { //18 : after 6:00 pm
+
+  // Sets map to night mode if accessed at night
+  if (time.getHours() >= 18) { 
     map_style = night_map_style;
   }
+
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 0, lng: 0}, 
     zoom: 15,
     styles: map_style
   });
+
   map.setOptions({
     minZoom: 12, 
-    maxZoom: 18 //whats the max allowed by google maps??
+    maxZoom: 18 
   });
+
   heatmap = new google.maps.visualization.HeatmapLayer({
     data: getPoints(),
     map: map
   });
-  //map.clearOverlays(); //clear markers
+
   let card = document.getElementById('pac-card');
   let input = document.getElementById('pac-input');
   let types = document.getElementById('type-selector');
@@ -54,10 +61,10 @@ function generateMap() {
  
   // Bind the map's bounds (viewport) property to the autocomplete object,
   // so that the autocomplete requests use the current map bounds for the
-  // bounds option in the request.
+  // bounds option in the request
   autocomplete.bindTo('bounds', map);
  
-  // Set the data fields to return when the user selects a place.
+  // Set the data fields to return when the user selects a place
   autocomplete.setFields(
   ['address_components', 'geometry', 'icon', 'name']);
  
@@ -68,6 +75,7 @@ function generateMap() {
     map: map,
     anchorPoint: new google.maps.Point(0, -29),
   });
+
   autocomplete.addListener('place_changed', function() {
     infowindow.close();
     marker.setVisible(false);
@@ -88,7 +96,7 @@ function generateMap() {
     }
     
     marker.setPosition(place.geometry.location);
-    //if place is near the user, let them submit
+    //If place is near the user, let them submit
     marker.setVisible(true);
  
     let address = '';
@@ -143,6 +151,7 @@ function generateMap() {
   });
 }
  
+
 /* Populate the maps with flags from the data in datastore. */
 async function getFlags() {
   checkLogin(); //call function to hide login/logout buttons
@@ -154,6 +163,7 @@ async function getFlags() {
   }
 };
 
+
 /** Takes attributes such as lat and long from datastore
   * and transfer the information to the map while initializing
   * infowindows for the flags.
@@ -163,6 +173,7 @@ function createFlag(flags, i) {
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
   var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
   heatmap_data.push(myLatlng);
+
   let userId = flags[i].userId;
   var marker = new google.maps.Marker({
     position: myLatlng,
@@ -170,6 +181,7 @@ function createFlag(flags, i) {
     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
     title: flags[i].name,
     id: id,
+
     contentForUserWhoFlagged: '<div class="padding"><span class="title">' + flags[i].name + 
       '</span><br>' + '<span>' + flags[i].address + '</span>' +
       '<br><br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
