@@ -12,11 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-<<<<<<< HEAD
 /* Retrieves counties based on a passed longtiude and latitude. */
-=======
-/* Retrieves counties based on a passed longtiude and latitude */
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
 function getCounties(){
   console.log('getCounties');
   map.setCenter({lat: -33.00, lng: 151.00}); 
@@ -26,10 +22,7 @@ function getCounties(){
 /* Prints geolocation success to console. */
 function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
-<<<<<<< HEAD
-=======
   user_lat = latitude; user_lng = longitude;
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
   map.setCenter({lat: latitude, lng: longitude});
   getFlags();
 }
