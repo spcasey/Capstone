@@ -15,7 +15,6 @@
 /* Retrieves counties based on a passed longtiude and latitude. */
 function getCounties(){
   console.log('getCounties');
-  //getPlaces(-33.00, 151.00);
   map.setCenter({lat: -33.00, lng: 151.00}); 
   getFlags(); //flags_script.js
 }
@@ -23,6 +22,7 @@ function getCounties(){
 /* Prints geolocation success to console. */
 function userLocationSuccess(latitude, longitude){
   console.log('userLocationSuccess')
+  user_lat = latitude; user_lng = longitude;
   map.setCenter({lat: latitude, lng: longitude});
   getFlags();
 }
