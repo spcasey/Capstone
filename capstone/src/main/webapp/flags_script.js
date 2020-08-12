@@ -60,6 +60,7 @@ function getUserLocation(){
 
 /* Builds map object with zoom functionality */
 function generateMap(user_lat, user_lng) {
+  localStorage.setItem("prev_page", "home");
   let time = new Date();
   let map_style = day_map_style;
   if (time.getHours() >= SWITCH_HOUR) { 
