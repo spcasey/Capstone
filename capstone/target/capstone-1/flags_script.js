@@ -15,7 +15,7 @@ let map;
  
 const DISTANCE_THRESHOLD_MILES = 15; //max distance to be considered "close" to user
 const EARTH_RADIUS_MILES = 3958.8;
-const SWITCH_HOUR = 12; //6:00 pm
+const SWITCH_HOUR = 18; //6:00 pm
 const MIN_MAP_ZOOM = 12;
 const DEFAULT_MAP_ZOOM = 15;
 const MAX_MAP_ZOOM = 18;
