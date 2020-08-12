@@ -36,27 +36,24 @@ const gradient = [
     "rgba(255, 0, 0, 1)"
   ];
 
-/* Prints geolocation failure to console */
-function userLocationFail(error){ 
-  //callback function needs a geolocationerror as a singular arg, hence why it just calls the fallback function
-  window.location.href = 'trends.html';
-}
-
 /* geolocation api */
-function getUserLocation(){  
+function getUserLocation(){
   let time = new Date();
   if (time.getHours() >= SWITCH_HOUR) {
     document.body.style.backgroundColor = '#614051';
+    document.getElementById("top_nav").className = "navbar navbar-expand-md navbar-dark bg-dark sticky-top";
+    document.getElementById("pac").style.color = "white";
+    document.getElementById("pac").className = "bg-dark";  
   }
   $.ajax({
     type : 'POST',
     data: '', 
     url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM", 
     success: function(result){
-      generateMap(result.location.lat, result.location.lng);//userLocationSuccess(result.location.lat, result.location.lng);
+      generateMap(result.location.lat, result.location.lng);
     },
     error: function(error){
-      userLocationFail(error);
+      window.location.href = 'trends.html';
     }}
   );
 }

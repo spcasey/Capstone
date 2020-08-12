@@ -15,7 +15,7 @@ let map;
  
 const DISTANCE_THRESHOLD_MILES = 15; //max distance to be considered "close" to user
 const EARTH_RADIUS_MILES = 3958.8;
-const SWITCH_HOUR = 18; //6:00 pm
+const SWITCH_HOUR = 12; //6:00 pm
 const MIN_MAP_ZOOM = 12;
 const DEFAULT_MAP_ZOOM = 15;
 const MAX_MAP_ZOOM = 18;
@@ -36,33 +36,24 @@ const gradient = [
     "rgba(255, 0, 0, 1)"
   ];
 
-/* Prints geolocation success to console */
-/*function userLocationSuccess(latitude, longitude){
-  return {"lat": latitude, "lng": longitude};
-}*/
-
-/* Prints geolocation failure to console */
-function userLocationFail(error){ 
-  //callback function needs a geolocationerror as a singular arg, hence why it just calls the fallback function
-  window.location.href = 'trends.html';
-}
-
 /* geolocation api */
-function getUserLocation(){  
-  //localStorage.setItem("prev_page", "home"); //DELETE???
+function getUserLocation(){
   let time = new Date();
   if (time.getHours() >= SWITCH_HOUR) {
     document.body.style.backgroundColor = '#614051';
+    document.getElementById("top_nav").className = "navbar navbar-expand-md navbar-dark bg-dark sticky-top";
+    document.getElementById("pac").style.color = "white";
+    document.getElementById("pac").className = "bg-dark";  
   }
   $.ajax({
     type : 'POST',
     data: '', 
     url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM", 
     success: function(result){
-      generateMap(result.location.lat, result.location.lng);//userLocationSuccess(result.location.lat, result.location.lng);
+      generateMap(result.location.lat, result.location.lng);
     },
     error: function(error){
-      userLocationFail(error);
+      window.location.href = 'trends.html';
     }}
   );
 }
