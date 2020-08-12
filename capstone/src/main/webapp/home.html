@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="overflow:hidden">
+<html>
 <!-- Styling using Bootstrap and other libraries -->
 <head>
   <title>COVID Tracker</title>
@@ -17,21 +17,17 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM&libraries=places,visualization&callback=generateMap"
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM&libraries=places,visualization&callback=getUserLocation"
     async defer></script>
   <script src="flags_script.js"></script>
-  <script src="locations_script.js"></script>
   <script src="login_script.js"></script>
   <script src="day_map.js"></script> 
   <script src="night_map.js"></script> 
-  <script src="heatmap_script.js"></script>
 </head>
-
-
 <body style="overflow:hidden">
   <!-- Navigation -->
   <div id="navbar">
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+  <nav id="top_nav" class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="home.html"><img src="images/logo.png"></a>
       
@@ -68,7 +64,7 @@
     <div class="row text-center" style="height:100%">
       <div class="col-12" style="height:100%">
         <div class="pac-card" id="pac-card">
-          <div id="pac" class="bg-dark">Search to add a flag:</div>
+          <div id="pac" class="bg-light" style="color: black;">Search to add a flag:</div>
 
           <div id="type-selector" class="pac-controls">
             <input type="radio" name="type" id="changetype-all" checked="checked">
@@ -109,6 +105,5 @@
       </div>
     </div>
   </div>
-
 </body>
 </html>

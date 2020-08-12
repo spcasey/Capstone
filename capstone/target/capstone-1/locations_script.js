@@ -12,41 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-<<<<<<< HEAD
-/* Retrieves counties based on a passed longtiude and latitude. */
-=======
-/* Retrieves counties based on a passed longtiude and latitude */
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
-function getCounties(){
-  console.log('getCounties');
-  map.setCenter({lat: -33.00, lng: 151.00}); 
-  getFlags(); //flags_script.js
-}
-
-/* Prints geolocation success to console. */
+/* Prints geolocation success to console */
 function userLocationSuccess(latitude, longitude){
-  console.log('userLocationSuccess')
-<<<<<<< HEAD
-=======
   user_lat = latitude; user_lng = longitude;
->>>>>>> 055187b99994656f4d24f8c31b7113cf4637b762
   map.setCenter({lat: latitude, lng: longitude});
   getFlags();
 }
- 
-/* Prints geolocation failure to console. */
-function userLocationFail(error){ 
-  // Callback function needs a geolocationerror as a singular arg, hence why it just calls the fallback function
-  getCounties();
-}
 
-/* Runs function on page load. */
+/* Prints geolocation failure to console */
+function userLocationFail(error){ 
+  //callback function needs a geolocationerror as a singular arg, hence why it just calls the fallback function
+  window.location.href = 'trends.html';
+}
+ 
 window.onload = function(){
   localStorage.setItem("prev_page", "home");
   let time = new Date();
-
-  // Changes background color to night mode if accessed at night
-  if (time.getHours() >= 18) {
+  if (time.getHours() >= SWITCH_HOUR) {
     document.body.style.backgroundColor = '#614051';
   }
   $.ajax({
@@ -57,7 +39,7 @@ window.onload = function(){
       userLocationSuccess(result.location.lat, result.location.lng);
     },
     error: function(error){
-      getCounties(); 
+      userLocationFail(error);
     }}
   );
 }
