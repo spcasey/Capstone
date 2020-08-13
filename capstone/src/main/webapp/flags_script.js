@@ -11,47 +11,74 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-//global vars; referenced in both this script and locations_script 
-
 let map;
-let heatmap;
-let map_style;
-let establishment_markers = [];
-let heatmap_data = [];
-let marker_dict = {};
-let flag_dict = {};
-let user_lat;
-let user_lng;
-let DISTANCE_THRESHOLD_MILES = 15; //predetermined constant; max distance to be considered "close" to user
-let EARTH_RADIUS_MILES = 3958.8;
+ 
+const DISTANCE_THRESHOLD_MILES = 15; //max distance to be considered "close" to user
+const EARTH_RADIUS_MILES = 3958.8;
+const SWITCH_HOUR = 18; //6:00 pm
+const MIN_MAP_ZOOM = 12;
+const DEFAULT_MAP_ZOOM = 15;
+const MAX_MAP_ZOOM = 18;
+const gradient = [
+    "rgba(0, 255, 255, 0)",
+    "rgba(0, 255, 255, 1)",
+    "rgba(0, 191, 255, 1)",
+    "rgba(0, 127, 255, 1)",
+    "rgba(0, 63, 255, 1)",
+    "rgba(0, 0, 255, 1)",
+    "rgba(0, 0, 223, 1)",
+    "rgba(0, 0, 191, 1)",
+    "rgba(0, 0, 159, 1)",
+    "rgba(0, 0, 127, 1)",
+    "rgba(63, 0, 91, 1)",
+    "rgba(127, 0, 63, 1)",
+    "rgba(191, 0, 31, 1)",
+    "rgba(255, 0, 0, 1)"
+  ];
 
-/* Builds map object with zoom functionality. */
-function generateMap() {
+/* geolocation api */
+function getUserLocation(){
   let time = new Date();
-  map_style = day_map_style;
+  if (time.getHours() >= SWITCH_HOUR) {
+    document.body.style.backgroundColor = '#614051';
+    document.getElementById("top_nav").className = "navbar navbar-expand-md navbar-dark bg-dark sticky-top";
+    document.getElementById("pac").style.color = "white";
+    document.getElementById("pac").className = "bg-dark";  
+  }
+  $.ajax({
+    type : 'POST',
+    data: '', 
+    url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM", 
+    success: function(result){
+      generateMap(result.location.lat, result.location.lng);
+    },
+    error: function(error){
+      window.location.href = 'trends.html';
+    }}
+  );
+}
 
-  // Sets map to night mode if accessed at night
-  if (time.getHours() >= 18) { 
+/* Builds map object with zoom functionality */
+function generateMap(user_lat, user_lng) {
+  let time = new Date();
+  let map_style = day_map_style;
+  if (time.getHours() >= SWITCH_HOUR) { 
     map_style = night_map_style;
   }
 
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 0, lng: 0}, 
-    zoom: 15,
+    center: {lat: user_lat, lng: user_lng}, 
+    zoom: DEFAULT_MAP_ZOOM,
     styles: map_style
   });
-
   map.setOptions({
-    minZoom: 12, 
-    maxZoom: 18 
+    minZoom: MIN_MAP_ZOOM,
+    maxZoom: MAX_MAP_ZOOM
   });
 
-  heatmap = new google.maps.visualization.HeatmapLayer({
-    data: getPoints(),
-    map: map
-  });
+  let promise = getFlags();
 
+  //map.clearOverlays(); //clear markers
   let card = document.getElementById('pac-card');
   let input = document.getElementById('pac-input');
   let types = document.getElementById('type-selector');
@@ -61,10 +88,10 @@ function generateMap() {
  
   // Bind the map's bounds (viewport) property to the autocomplete object,
   // so that the autocomplete requests use the current map bounds for the
-  // bounds option in the request
+  // bounds option in the request.
   autocomplete.bindTo('bounds', map);
  
-  // Set the data fields to return when the user selects a place
+  // Set the data fields to return when the user selects a place.
   autocomplete.setFields(
   ['address_components', 'geometry', 'icon', 'name']);
  
@@ -75,7 +102,6 @@ function generateMap() {
     map: map,
     anchorPoint: new google.maps.Point(0, -29),
   });
-
   autocomplete.addListener('place_changed', function() {
     infowindow.close();
     marker.setVisible(false);
@@ -96,7 +122,7 @@ function generateMap() {
     }
     
     marker.setPosition(place.geometry.location);
-    //If place is near the user, let them submit
+    //if place is near the user, let them submit
     marker.setVisible(true);
  
     let address = '';
@@ -112,10 +138,10 @@ function generateMap() {
     infowindowContent.children['place-icon'].src = place.icon;
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
+
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
-    console.log("close? " + close)
-    if(close === true && isSignedIn()){
+    if(close === true){
       infowindowContent.children['report'].style.display = 'inline-block';
     }else{
       infowindowContent.children['report'].style.display = 'none';
@@ -125,6 +151,7 @@ function generateMap() {
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
     localStorage.setItem("form-userId", String(getUserId()));
+
     infowindow.open(map, marker);
 
     marker.addListener('click', function() {
@@ -146,42 +173,78 @@ function generateMap() {
   setupClickListener('changetype-geocode', ['geocode']);
  
   document.getElementById('use-strict-bounds').addEventListener('click', function() {
-    console.log('Checkbox clicked! New state=' + this.checked);
     autocomplete.setOptions({strictBounds: this.checked});
   });
+
+  let heatmap_data_users = [];
+  promise.then((data) => {
+    heatmap_data_users = data;
+    let heatmap = new google.maps.visualization.HeatmapLayer({
+      data: heatmap_data_users
+    });
+    heatmap.setMap(map);
+  });
 }
- 
 
 /* Populate the maps with flags from the data in datastore. */
 async function getFlags() {
-  checkLogin(); //call function to hide login/logout buttons
-  deleteExpiredFlags(); //delete flags that are more 14 days old
   const response = await fetch('/data');
   const flags = await response.json();
+  let sorted_report_counts = getPlaceCounts(flags);
+  let heatmap_data_users = [];
   for (let i = 0; i < flags.length; i++) {
-    createFlag(flags, i);
+    heatmap_data_users = createFlag(flags, i, heatmap_data_users, sorted_report_counts);
   }
+  return heatmap_data_users;
 };
 
+/*sort flag data based on report count of places*/
+function getPlaceCounts(flags){
+  let report_counts_dict = {};
+  for (let i = 0; i < flags.length; i++) {
+    let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
+    if(report_counts_dict[id] === undefined){
+      report_counts_dict[id] = 1;
+    }else{
+      report_counts_dict[id] = report_counts_dict[id] + 1;
+    }
+  }   
+  let sorted_report_counts = Object.keys(report_counts_dict).map(function(key_id) {
+    return [key_id, report_counts_dict[key_id]];
+  });
+  sorted_report_counts.sort(function(r1, r2) {
+    return r2[1] - r1[1];
+  });
+  return sorted_report_counts;
+}
 
 /** Takes attributes such as lat and long from datastore
   * and transfer the information to the map while initializing
   * infowindows for the flags.
  */
-function createFlag(flags, i) {
-  var infoWindow = new google.maps.InfoWindow();
+function createFlag(flags, i, heatmap_data_users, sorted_report_counts) {
+  let infoWindow = new google.maps.InfoWindow();
   let id = flags[i].name + ';' + flags[i].lat + ';' + flags[i].lng;
-  var myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
-  heatmap_data.push(myLatlng);
+  let myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
+  heatmap_data_users.push(myLatlng);
+  
+  //this color coding is meant for when there's a larger dataset quantity
+  let percentile = 100 - Math.round((getRank(id, sorted_report_counts) / (flags.length + 1)) * 100);
+  let icon_link = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+  if(percentile >= 75){
+    icon_link = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+  }
+  else if(percentile >= 50){
+    icon_link = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+  }
 
   let userId = flags[i].userId;
-  var marker = new google.maps.Marker({
+  let marker = new google.maps.Marker({
     position: myLatlng,
     map: map,
-    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    icon: icon_link,
     title: flags[i].name,
     id: id,
-
     contentForUserWhoFlagged: '<div class="padding"><span class="title">' + flags[i].name + 
       '</span><br>' + '<span>' + flags[i].address + '</span>' +
       '<br><br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
@@ -196,8 +259,8 @@ function createFlag(flags, i) {
           infoWindow.setContent(this.content);
       }
       infoWindow.open(map, marker);
-    }); 
-    
+    });
+    return heatmap_data_users;
 }
 
 /*check if searched place is near the user (haversine formula), determines whether to let them report*/
@@ -209,11 +272,23 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
     Math.sqrt(Math.sin(dlat / 2.0) * Math.sin(dlat / 2.0) + 
     Math.cos(p1_lat * rad)*Math.cos(p2_lat * rad) * 
     Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
-  console.log("Distance (mi): " + Math.floor(dist));
   if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES){
     return true;
   }
   return false;
+}
+ 
+/*determines which places have most cases relative to whole database
+  currently doesn't account for if place is close to user*/
+function getRank(id, sorted_report_counts){
+  let rank = 0;
+  for(let k = 0; k < sorted_report_counts.length; k++){
+    if(id === sorted_report_counts[k][0]){
+      rank = k + 1;
+      break;
+    }
+  }
+  return rank;
 }
 
 /** Delete flags after the timestamp of the flags exceed
