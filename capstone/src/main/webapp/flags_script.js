@@ -233,5 +233,12 @@ function deleteUserFlag(id) {
   location.reload();
 }
 
- 
+/** Testing function for mocha lol. */
+function testingMocha(A, B) {
+    return A + B;
+}
+
+/** Export functions to allow Mocha and Chai testing. */
+exports.testingMocha = testingMocha;
+exports.isPlaceClose = isPlaceClose;
  

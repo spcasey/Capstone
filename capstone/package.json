@@ -1,0 +1,18 @@
+{
+  "name": "capstone",
+  "version": "1.0.0",
+  "description": "capstone project for 2020 STEP internship",
+  "main": "testing.js",
+  "scripts": {
+    "test": "mocha || true"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.2.0"
+  },
+  "devDependencies": {
+    "chair": "0.0.0",
+    "mocha": "^8.1.1"
+  }
+}
