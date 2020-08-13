@@ -24,6 +24,7 @@
   <script src="day_map.js"></script> 
   <script src="night_map.js"></script> 
 </head>
+
 <body style="overflow:hidden">
   <!-- Navigation -->
   <div id="navbar">
@@ -59,8 +60,8 @@
     </div>
   </nav>
   </div>
-  
-  <div class="container-fluid padding" style="height:100%">
+
+  <div class="container-fluid" style="height:100%">
     <div class="row text-center" style="height:100%">
       <div class="col-12" style="height:100%">
         <div class="pac-card" id="pac-card">
@@ -91,13 +92,14 @@
           </div>
         </div>
 
-        <div id="map" style="position:relative" style="height:100%" style="width:100%"></div>
+        <div id="map"></div>
 
         <div class="padding" id="infowindow-content">
           <img src="" width="23" height="23" id="place-icon">
           <span id="place-name"  class="title"></span><br>
           <span id="place-address"></span>
-          <br><br>
+          <br>
+          <br>
           <button id="report" class="btn btn-outline-danger" style="text-align:right;" 
             onclick="window.location.href='submit_data.html'">Report</button>
         </div>
@@ -107,4 +109,5 @@
   </div>
   
 </body>
+
 </html>
