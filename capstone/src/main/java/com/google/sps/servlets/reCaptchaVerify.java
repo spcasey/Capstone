@@ -34,20 +34,20 @@ public class reCaptchaVerify extends HttpServlet {
       output.write(params.getBytes());
       output.flush();
       output.close();
-	  int code = url_connect.getResponseCode();
+      int code = url_connect.getResponseCode();
       if(code == HttpURLConnection.HTTP_OK){ //status 200 success
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(url_connect.getInputStream()));
-	    StringBuffer data = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(url_connect.getInputStream()));
+        StringBuffer data = new StringBuffer();
         String input = reader.readLine();
         while(input != null) {
-		  data.append(input);
+          data.append(input);
           input = reader.readLine();
-	    }
-	    reader.close();
+        }
+        reader.close();
         verified = data.toString();
       }else{
         verified = "{\"error\": \"yes\"}";
-	  }
+      }
       JSONObject json = new JSONObject(verified);
       response.setContentType("application/json");
       response.getWriter().println(json.toString());
