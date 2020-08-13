@@ -49,20 +49,12 @@ public class DeleteFlags extends HttpServlet {
 	PreparedQuery results = datastore.prepare(query);
     Date currentDate = new Date();
 
-    /** Use a calendar object to count the date when the flags
-      * should expire. 
-      */
-    Calendar c = Calendar.getInstance();
-    c.setTime(currentDate);
-    c.add(Calendar.DATE, -14);
-    Date currentDateMinusTwoWeeks = c.getTime();
-
     /** delete flags if the date property of the flag is before
       * the previously calculated date. 
       */
     for (Entity entity: results.asIterable()) {
         Date flagDate = (Date)entity.getProperty("date");
-        if (currentDateMinusTwoWeeks.compareTo(flagDate) > 0) {
+        if (isTooOld(flagDate, currentDate)) {
             datastore.delete(entity.getKey());
         } else {
             break;
@@ -70,5 +62,15 @@ public class DeleteFlags extends HttpServlet {
     }
   }
 
+  public boolean isTooOld(Date flagDate, Date currentDate) {
+      Calendar c = Calendar.getInstance();
+      c.setTime(currentDate);
+      c.add(Calendar.DATE, -14);
+      Date currentDateMinusTwoWeeks = c.getTime();
+      if (currentDateMinusTwoWeeks.compareTo(flagDate) > 0) {
+          return true;
+      }
+      return false;
+  }
 }
 

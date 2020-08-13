@@ -7,7 +7,6 @@ describe('flags_script.js', () => {
       assert.equal(result, 7);
   })
 
-
   describe('flags_script.js', () => {
       it('testing isPlaceClose function returns true when two points are close', () => {
           const result = flags_script.isPlaceClose(33.703072, -117.794583, 33.706303, -117.796900);

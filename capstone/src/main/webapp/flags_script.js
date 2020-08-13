@@ -15,12 +15,8 @@
 //global vars; referenced in both this script and locations_script 
 
 let map;
-let heatmap;
 let map_style;
-let establishment_markers = [];
 let heatmap_data = [];
-let marker_dict = {};
-let flag_dict = {};
 let user_lat;
 let user_lng;
 let DISTANCE_THRESHOLD_MILES = 15; //predetermined constant; max distance to be considered "close" to user
