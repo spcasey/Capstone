@@ -189,7 +189,7 @@ function createFlag(flags, i) {
     content:'<div class="padding"><span class="title">' + flags[i].name + 
       '</span><br><br>' + '<span>' + flags[i].address + '</span></div>'
     });
-  marker.addListener('click', function() {
+    marker.addListener('click', function() {
       if (getUserId() === userId) {
           infoWindow.setContent(this.contentForUserWhoFlagged);
       } else {
