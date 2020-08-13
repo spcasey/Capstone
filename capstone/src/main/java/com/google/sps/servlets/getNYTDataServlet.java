@@ -37,19 +37,19 @@ public class getNYTDataServlet extends HttpServlet {
     URL url = new URL(link);
     HttpURLConnection url_connect = (HttpURLConnection) url.openConnection();
     url_connect.setRequestMethod("GET");
-	int code = url_connect.getResponseCode();
+    int code = url_connect.getResponseCode();
     List<String> county_data = new ArrayList<String>();
     if(code == HttpURLConnection.HTTP_OK){ 
-	  BufferedReader reader = new BufferedReader(new InputStreamReader(url_connect.getInputStream()));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(url_connect.getInputStream()));
       String input = reader.readLine();
       while(input != null) {
         input = reader.readLine();
         county_data.add(input);
-	  }
-	  reader.close();
-	}else{
+      }
+      reader.close();
+    }else{
       county_data.add("error");
-	}
+    }
     String json = new Gson().toJson(county_data);
     response.setContentType("application/json");
     response.getWriter().println(json);

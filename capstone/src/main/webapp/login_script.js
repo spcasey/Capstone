@@ -37,7 +37,9 @@ function isSignedIn() {
 function checkLogin() {
     if (!isSignedIn()) {
         document.getElementById("sign_out").style.display = "none";
+        document.getElementById("sign_in").style.display = "block";
     } else {
+        document.getElementById("sign_out").style.display = "block";
         document.getElementById("sign_in").style.display = "none";
     }
 }
