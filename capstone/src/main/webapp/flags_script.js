@@ -191,10 +191,10 @@ function generateMap(user_lat, user_lng) {
 async function getFlags() {
   const response = await fetch('/data');
   const flags = await response.json();
-  let sorted_report_counts = getPlaceCounts(flags);
+  let sorted_counts_dict = getPlaceCounts(flags);
   let heatmap_data_users = [];
   for (let i = 0; i < flags.length; i++) {
-    heatmap_data_users = createFlag(flags, i, heatmap_data_users, sorted_report_counts);
+    heatmap_data_users = createFlag(flags, i, heatmap_data_users, sorted_counts_dict);
   }
   return heatmap_data_users;
 };
@@ -209,14 +209,16 @@ function getPlaceCounts(flags){
     }else{
       report_counts_dict[id] = report_counts_dict[id] + 1;
     }
-  }   
+  } 
   let sorted_report_counts = Object.keys(report_counts_dict).map(function(key_id) {
     return [key_id, report_counts_dict[key_id]];
   });
   sorted_report_counts.sort(function(r1, r2) {
     return r2[1] - r1[1];
   });
-  return sorted_report_counts;
+  let sorted_counts_dict = {}
+  sorted_report_counts.forEach(([key, value]) => sorted_counts_dict[key] = value)
+  return sorted_counts_dict;
 }
 
 /** Takes attributes such as lat and long from datastore
@@ -279,17 +281,12 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
   return false;
 }
  
-/*determines which places have most cases relative to whole database
-  currently doesn't account for if place is close to user*/
-function getRank(id, sorted_report_counts){
-  let rank = 0;
-  for(let k = 0; k < sorted_report_counts.length; k++){
-    if(id === sorted_report_counts[k][0]){
-      rank = k + 1;
-      break;
-    }
-  }
-  return rank;
+/* Determines which places have most cases relative to whole database.
+  Currently doesn't account for if place is close to userv*/
+function getRank(id, sorted_counts_dict){
+  let report_dict = Object.keys(sorted_counts_dict);
+  let rank = report_dict.indexOf(id);
+  return rank + 1;
 }
 
 /** Delete flags after the timestamp of the flags exceed
