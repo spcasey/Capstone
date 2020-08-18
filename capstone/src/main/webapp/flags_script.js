@@ -20,27 +20,28 @@ const MIN_MAP_ZOOM = 12;
 const DEFAULT_MAP_ZOOM = 15;
 const MAX_MAP_ZOOM = 18;
 const gradient = [
-    "rgba(0, 255, 255, 0)",
-    "rgba(0, 255, 255, 1)",
-    "rgba(0, 191, 255, 1)",
-    "rgba(0, 127, 255, 1)",
-    "rgba(0, 63, 255, 1)",
-    "rgba(0, 0, 255, 1)",
-    "rgba(0, 0, 223, 1)",
-    "rgba(0, 0, 191, 1)",
-    "rgba(0, 0, 159, 1)",
-    "rgba(0, 0, 127, 1)",
-    "rgba(63, 0, 91, 1)",
-    "rgba(127, 0, 63, 1)",
-    "rgba(191, 0, 31, 1)",
-    "rgba(255, 0, 0, 1)"
-  ];
+  "rgba(0, 255, 255, 0)",
+  "rgba(0, 255, 255, 1)",
+  "rgba(0, 191, 255, 1)",
+  "rgba(0, 127, 255, 1)",
+  "rgba(0, 63, 255, 1)",
+  "rgba(0, 0, 255, 1)",
+  "rgba(0, 0, 223, 1)",
+  "rgba(0, 0, 191, 1)",
+  "rgba(0, 0, 159, 1)",
+  "rgba(0, 0, 127, 1)",
+  "rgba(63, 0, 91, 1)",
+  "rgba(127, 0, 63, 1)",
+  "rgba(191, 0, 31, 1)",
+  "rgba(255, 0, 0, 1)"
+];
 
 /* geolocation api */
 function getUserLocation(){
   let time = new Date();
   if (time.getHours() >= SWITCH_HOUR) {
     document.body.style.backgroundColor = '#614051';
+    document.getElementById('logo').src = 'images/logo.png';
     document.getElementById("top_nav").className = "navbar navbar-expand-md navbar-dark bg-dark sticky-top";
     document.getElementById("pac").style.color = "white";
     document.getElementById("pac").className = "bg-dark";  
@@ -233,16 +234,6 @@ function createFlag(flags, i, heatmap_data_users, sorted_report_counts) {
   let myLatlng = new google.maps.LatLng(flags[i].lat,flags[i].lng);
   heatmap_data_users.push(myLatlng);
   
-  //this color coding is meant for when there's a larger dataset quantity
-  let percentile = 100 - Math.round((getRank(id, sorted_report_counts) / (flags.length + 1)) * 100);
-  let icon_link = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-  if(percentile >= 75){
-    icon_link = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-  }
-  else if(percentile >= 50){
-    icon_link = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
-  }
-
   let userId = flags[i].userId;
   let marker = new google.maps.Marker({
     position: myLatlng,
@@ -279,14 +270,6 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
     Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
   if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES) return true;
   return false;
-}
- 
-/* Determines which places have most cases relative to whole database.
-  Currently doesn't account for if place is close to user */
-function getRank(id, sorted_counts_dict){
-  let report_dict = Object.keys(sorted_counts_dict);
-  let rank = report_dict.indexOf(id);
-  return rank + 1;
 }
 
 /** Delete flags after the timestamp of the flags exceed

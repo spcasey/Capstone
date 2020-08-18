@@ -14,7 +14,7 @@
 const SWITCH_HOUR = 18; //6:00 pm
 const US_LAT = 37.0902;
 const US_LNG = -95.7129;
-//puerto rico was missing death data from nyt, hence exclusion
+
 const STATES_DISPLAYED = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware',
   'District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky',
   'Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana',
