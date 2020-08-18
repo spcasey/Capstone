@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.google.sps.servlets;
+package com.google.sps;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -38,39 +38,42 @@ import java.text.ParseException;
 @WebServlet("/delete-flag")
 public class DeleteFlags extends HttpServlet {
 
-  private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    Query query = new Query("Flag").addSort("date", SortDirection.ASCENDING);
+        Query query = new Query("Flag").addSort("date", SortDirection.ASCENDING);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-	PreparedQuery results = datastore.prepare(query);
-    Date currentDate = new Date();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        Date currentDate = new Date();
 
-    /** delete flags if the date property of the flag is before
-      * the previously calculated date. 
-      */
-    for (Entity entity: results.asIterable()) {
-        Date flagDate = (Date)entity.getProperty("date");
-        if (isTooOld(flagDate, currentDate)) {
-            datastore.delete(entity.getKey());
-        } else {
-            break;
+        /** delete flags if the date property of the flag is before
+         * the previously calculated date. 
+         */
+        for (Entity entity: results.asIterable()) {
+            Date flagDate = (Date) entity.getProperty("date");
+            if (isTooOld(flagDate, currentDate)) {
+                datastore.delete(entity.getKey());
+            } else {
+                break;
+            }
         }
     }
-  }
 
-  public boolean isTooOld(Date flagDate, Date currentDate) {
-      Calendar c = Calendar.getInstance();
-      c.setTime(currentDate);
-      c.add(Calendar.DATE, -14);
-      Date currentDateMinusTwoWeeks = c.getTime();
-      if (currentDateMinusTwoWeeks.compareTo(flagDate) > 0) {
-          return true;
-      }
-      return false;
-  }
+    public boolean isTooOld(Date flagDate, Date currentDate) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(currentDate);
+        c.add(Calendar.DATE, -14);
+        Date currentDateMinusTwoWeeks = c.getTime();
+        if (currentDateMinusTwoWeeks.compareTo(flagDate) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public DatastoreService getDataStore() {
+        return DatastoreServiceFactory.getDatastoreService();
+    }
 }
-

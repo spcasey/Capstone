@@ -1,4 +1,4 @@
-package com.google.sps.servlets;
+package com.google.sps;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/deleteUserFlag")
 public class DeleteUserFlag extends HttpServlet {
 
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("flagId"));
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long id = Long.parseLong(request.getParameter("flagId"));
 
-    Key flagKey = KeyFactory.createKey("Flag", id);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(flagKey);
-    response.sendRedirect("/home.html");
-  }
+        Key flagKey = KeyFactory.createKey("Flag", id);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.delete(flagKey);
+        response.sendRedirect("/home.html");
+    }
 }

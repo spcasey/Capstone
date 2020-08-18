@@ -36,7 +36,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.59</version>
+      <version>1.9.81</version>
     </dependency>
 
     <dependency>
@@ -53,16 +53,41 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-translate</artifactId>
-      <version>1.70.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20150729</version>
     </dependency>
+
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.4.2</version>
+        <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.4.2</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-testing -->
+    <dependency>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>appengine-testing</artifactId>
+        <version>1.9.81</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-api-stubs -->
+    <dependency>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>appengine-api-stubs</artifactId>
+        <version>1.9.81</version>
+        <scope>test</scope>
+    </dependency>
+
 
   </dependencies>
 

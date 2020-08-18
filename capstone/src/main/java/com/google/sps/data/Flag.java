@@ -1,4 +1,4 @@
-package com.google.sps.data;
+package com.google.sps;
 
 import java.util.Date;
 
@@ -21,5 +21,25 @@ public final class Flag {
     this.lat = lat;
     this.lng = lng;
     this.date = date;
+  }
+
+  public long getId() {
+      return id;
+  }
+
+  public String getUserId() {
+      return userId;
+  }
+
+  public String getName() {
+      return name;
+  }
+
+  public String getLat() {
+      return lat;
+  }
+
+  public String getLng() {
+      return lng;
   }
 }

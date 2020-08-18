@@ -1,4 +1,5 @@
 package com.google.sps.data;
+
 /* User attributes */
 public final class User {
   private final long id;

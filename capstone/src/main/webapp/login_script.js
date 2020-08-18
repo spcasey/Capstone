@@ -1,55 +1,54 @@
 /** Global variable to store the email for current user. */
-var userId;
+let userId;
 
-/** Logs the user basic info on the console once the users 
-  * sign in. */
+/** Logs the user basic info on the console once the users
+  * sign in with @param googleUser. */
 function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
+  const profile = googleUser.getBasicProfile();
   userId = profile.getEmail();
-  document.getElementById("signOutButton").addEventListener("click", signOut);
 }
 
-/** Function for submit_script to access USERID. */
+/** Function for submit_script to access @return USERID. */
 function getUserId() {
-    return userId;
+  return userId;
 }
 
-/** Google Sign In API default function for signing users 
+/** Google Sign In API default function for signing users
   * out. Logs that the user signed out on console. */
 function signOut() {
-    userId = null;
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-    location.reload();
+  userId = null;
+  const auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function() {
+    console.log('User signed out.');
+  });
+  location.reload();
 }
 
-/** Returns a boolean of whether the user is signed in on 
+/** @return a boolean of whether the user is signed in on
   * Google or not. Helper for checkLogin function. */
-function isSignedIn() {
+function isLoggedOn() {
   return gapi.auth2.getAuthInstance().isSignedIn.get();
 }
-
 
 /** Hides the "sign-in"/"sign-out" buttons depending on the status
   * of the user. */
 function checkLogin() {
-    if (!isSignedIn()) {
-        document.getElementById("sign_out").style.display = "none";
-        document.getElementById("sign_in").style.display = "block";
-    } else {
-        document.getElementById("sign_out").style.display = "block";
-        document.getElementById("sign_in").style.display = "none";
-    }
+  if (isLoggedOn()) {
+    document.getElementById('sign_in').style.display = 'none';
+    document.getElementById('sign_out').style.display = 'block';
+  } else {
+    document.getElementById('sign_in').style.display = 'block';
+    document.getElementById('sign_out').style.display = 'none';
+  }
 }
 
 /** Reloads the page once the user signs in. */
 function reload() {
   setInterval(function() {
-    if(gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
       location.reload();
     }
   }, 1000);
 }
 
+window.onload = checkLogin;
