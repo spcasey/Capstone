@@ -79,7 +79,6 @@ function generateMap(user_lat, user_lng) {
 
   let promise = getFlags();
 
-  //map.clearOverlays(); //clear markers
   let card = document.getElementById('pac-card');
   let input = document.getElementById('pac-input');
   let types = document.getElementById('type-selector');
@@ -142,6 +141,7 @@ function generateMap(user_lat, user_lng) {
 
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
+
     if(close === true){
       infowindowContent.children['report'].style.display = 'inline-block';
     }else{
@@ -247,7 +247,7 @@ function createFlag(flags, i, heatmap_data_users, sorted_report_counts) {
   let marker = new google.maps.Marker({
     position: myLatlng,
     map: map,
-    icon: icon_link,
+    icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
     title: flags[i].name,
     id: id,
     contentForUserWhoFlagged: '<div class="padding"><span class="title">' + flags[i].name + 
@@ -277,14 +277,12 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
     Math.sqrt(Math.sin(dlat / 2.0) * Math.sin(dlat / 2.0) + 
     Math.cos(p1_lat * rad)*Math.cos(p2_lat * rad) * 
     Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
-  if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES){
-    return true;
-  }
+  if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES) return true;
   return false;
 }
  
 /* Determines which places have most cases relative to whole database.
-  Currently doesn't account for if place is close to userv*/
+  Currently doesn't account for if place is close to user */
 function getRank(id, sorted_counts_dict){
   let report_dict = Object.keys(sorted_counts_dict);
   let rank = report_dict.indexOf(id);
