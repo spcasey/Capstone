@@ -42,12 +42,14 @@ public class DeleteFlags extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        deleteExpiredFlags();
+    }
 
-        Query query = new Query("Flag").addSort("date", SortDirection.ASCENDING);
-
+    public void deleteExpiredFlags() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Flag").addSort("date", SortDirection.ASCENDING);
         PreparedQuery results = datastore.prepare(query);
-        Date currentDate = new Date();
+        Date currentDate = Calendar.getInstance().getTime();
 
         /** delete flags if the date property of the flag is before
          * the previously calculated date. 
@@ -56,8 +58,6 @@ public class DeleteFlags extends HttpServlet {
             Date flagDate = (Date) entity.getProperty("date");
             if (isTooOld(flagDate, currentDate)) {
                 datastore.delete(entity.getKey());
-            } else {
-                break;
             }
         }
     }
@@ -67,13 +67,7 @@ public class DeleteFlags extends HttpServlet {
         c.setTime(currentDate);
         c.add(Calendar.DATE, -14);
         Date currentDateMinusTwoWeeks = c.getTime();
-        if (currentDateMinusTwoWeeks.compareTo(flagDate) > 0) {
-            return true;
-        }
-        return false;
+        return currentDateMinusTwoWeeks.compareTo(flagDate) > 0;
     }
 
-    public DatastoreService getDataStore() {
-        return DatastoreServiceFactory.getDatastoreService();
-    }
 }

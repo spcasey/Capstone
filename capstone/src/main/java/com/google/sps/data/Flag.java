@@ -42,4 +42,8 @@ public final class Flag {
   public String getLng() {
       return lng;
   }
+
+  public String getAddress() {
+      return address;
+  }
 }

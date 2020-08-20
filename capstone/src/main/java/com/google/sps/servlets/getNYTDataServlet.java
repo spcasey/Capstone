@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 import com.google.gson.Gson;
-import org.json.JSONObject; 
+import org.json.JSONObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,27 +31,29 @@ import java.net.URL;
 /*Servlet that gets COVID count data from NYT*/
 @WebServlet("/getCountyData")
 public class getNYTDataServlet extends HttpServlet {
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String link = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/live/us-counties.csv";
-    URL url = new URL(link);
-    HttpURLConnection url_connect = (HttpURLConnection) url.openConnection();
-    url_connect.setRequestMethod("GET");
-    int code = url_connect.getResponseCode();
-    List<String> county_data = new ArrayList<String>();
-    if(code == HttpURLConnection.HTTP_OK){ 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(url_connect.getInputStream()));
-      String input = reader.readLine();
-      while(input != null) {
-        input = reader.readLine();
-        county_data.add(input);
-      }
-      reader.close();
-    }else{
-      county_data.add("error");
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<String> county_data = new ArrayList <String>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String link = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/live/us-counties.csv";
+            URL url = new URL(link);
+            HttpURLConnection url_connect = (HttpURLConnection) url.openConnection();
+            url_connect.setRequestMethod("GET");
+            int code = url_connect.getResponseCode();
+            reader = new BufferedReader(new InputStreamReader(url_connect.getInputStream()));
+            String input = reader.readLine();
+            while (input != null) {
+                input = reader.readLine();
+                county_data.add(input);
+            }
+        } catch (Exception e) {
+            county_data.add("error");
+        } finally {
+            reader.close();
+            String json = new Gson().toJson(county_data);
+            response.setContentType("application/json");
+            response.getWriter().println(json);
+        }
     }
-    String json = new Gson().toJson(county_data);
-    response.setContentType("application/json");
-    response.getWriter().println(json);
-  }
 }

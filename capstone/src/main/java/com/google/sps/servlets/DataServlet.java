@@ -52,7 +52,7 @@ public class DataServlet extends HttpServlet {
         String lat = request.getParameter("lat");
         String lng = request.getParameter("long");
         String userId = request.getParameter("userId");
-        Date currentDate = new Date();
+        Date currentDate = Calendar.getInstance().getTime();
 
         addFlagToDatastore(name, address, lat, lng, userId, currentDate);
 
@@ -84,13 +84,16 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Gson gson = new Gson();
+        response.setContentType("application/json; charset=UTF-8");
+        response.getWriter().println(gson.toJson(fetchFlags()));
+    }
 
-        Query query = new Query("Flag").addSort("date", SortDirection.DESCENDING);
-
+    public ArrayList<Flag> fetchFlags() {
+        ArrayList<Flag> flags = new ArrayList<>();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Flag").addSort("date", SortDirection.DESCENDING);
         PreparedQuery results = datastore.prepare(query);
-
-        ArrayList < Flag > flags = new ArrayList < > ();
         for (Entity entity: results.asIterable()) {
             long id = entity.getKey().getId();
             String userId = (String) entity.getProperty("userId");
@@ -103,8 +106,6 @@ public class DataServlet extends HttpServlet {
             Flag flag = new Flag(id, userId, name, address, lat, lng, date);
             flags.add(flag);
         }
-        Gson gson = new Gson();
-        response.setContentType("application/json; charset=UTF-8");
-        response.getWriter().println(gson.toJson(flags));
+        return flags;
     }
 }

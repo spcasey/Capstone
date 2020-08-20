@@ -142,7 +142,7 @@ function generateMap(user_lat, user_lng) {
 
     const close = isPlaceClose(user_lat, user_lng,
         place.geometry.location.lat(), place.geometry.location.lng());
-    if (close === true) {
+    if (close === true && isLoggedOn()) {
       infowindowContent.children['report'].style.display = 'inline-block';
     } else {
       infowindowContent.children['report'].style.display = 'none';

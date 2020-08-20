@@ -1,8 +1,17 @@
 package com.google.sps;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.io.IOException;
+import com.google.sps.Flag;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.AfterClass;
@@ -43,6 +52,18 @@ public class DataServletTest {
         Assert.assertEquals("testLng", entry.getProperty("long"));
         Assert.assertEquals("testUserId", entry.getProperty("userId"));
         Assert.assertTrue(entry.getProperty("date").equals(currentDate));
+    }
+
+    @Test
+    public void getFlags() {
+        DataServlet underTest = new DataServlet();
+        ArrayList<Flag> flagList = underTest.fetchFlags();
+        Flag testFlag = flagList.get(0);
+        Assert.assertEquals("testName", testFlag.getName());
+        Assert.assertEquals("testAddress", testFlag.getAddress());
+        Assert.assertEquals("testLat", testFlag.getLat());
+        Assert.assertEquals("testLng", testFlag.getLng());
+        Assert.assertEquals("testUserId", testFlag.getUserId());
     }
 
 }
