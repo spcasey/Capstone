@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 package com.google.sps;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -39,73 +40,69 @@ import java.text.ParseException;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+  /** Takes in the HTTP request and generates a Flag object to store into datastore. */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String name = request.getParameter("place-name");
+    String address = request.getParameter("place-address");
+    String lat = request.getParameter("lat");
+    String lng = request.getParameter("long");
+    String userId = request.getParameter("userId");
+    Date currentDate = Calendar.getInstance().getTime();
 
-    /** Takes in the HTTP request and generates a Flag object to store
-     * into datastore. 
-     */
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String name = request.getParameter("place-name");
-        String address = request.getParameter("place-address");
-        String lat = request.getParameter("lat");
-        String lng = request.getParameter("long");
-        String userId = request.getParameter("userId");
-        Date currentDate = Calendar.getInstance().getTime();
+    addFlagToDatastore(name, address, lat, lng, userId, currentDate);
 
-        addFlagToDatastore(name, address, lat, lng, userId, currentDate);
+    response.sendRedirect("/home.html");
+  }
 
-        response.sendRedirect("/home.html");
+  public Entity addFlagToDatastore(
+      String name, String address, String lat, String lng, String userId, Date currentDate) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    if (lat.isEmpty() == false) {
+      Entity entry = new Entity("Flag");
+      entry.setProperty("userId", userId);
+      entry.setProperty("name", name);
+      entry.setProperty("address", address);
+      entry.setProperty("lat", lat);
+      entry.setProperty("long", lng);
+      entry.setProperty("date", currentDate);
+      datastore.put(entry);
+      return entry;
     }
+    return null;
+  }
 
-    public Entity addFlagToDatastore(String name, String address, String lat, String lng,
-        String userId, Date currentDate) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  /**
+   * Reads all the entities from the datastore and passes it back as a json file to be converted
+   * into flags to be displayed on the map.
+   */
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Gson gson = new Gson();
+    response.setContentType("application/json; charset=UTF-8");
+    response.getWriter().println(gson.toJson(fetchFlags()));
+  }
 
-        if (lat.isEmpty() == false) {
-            Entity entry = new Entity("Flag");
-            entry.setProperty("userId", userId);
-            entry.setProperty("name", name);
-            entry.setProperty("address", address);
-            entry.setProperty("lat", lat);
-            entry.setProperty("long", lng);
-            entry.setProperty("date", currentDate);
-            datastore.put(entry);
-            return entry;
-        }
-        return null;
+  public ArrayList<Flag> fetchFlags() {
+    ArrayList<Flag> flags = new ArrayList<>();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Flag").addSort("date", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      long id = entity.getKey().getId();
+      String userId = (String) entity.getProperty("userId");
+      String name = (String) entity.getProperty("name");
+      String address = (String) entity.getProperty("address");
+      String lat = (String) entity.getProperty("lat");
+      String lng = (String) entity.getProperty("long");
+      Date date = (Date) entity.getProperty("date");
+
+      Flag flag = new Flag(id, userId, name, address, lat, lng, date);
+      flags.add(flag);
     }
-
-
-    /** Reads all the entities from the datastore and passes it back
-     * as a json file to be converted into flags to be displayed on the map. 
-     */
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Gson gson = new Gson();
-        response.setContentType("application/json; charset=UTF-8");
-        response.getWriter().println(gson.toJson(fetchFlags()));
-    }
-
-    public ArrayList<Flag> fetchFlags() {
-        ArrayList<Flag> flags = new ArrayList<>();
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("Flag").addSort("date", SortDirection.DESCENDING);
-        PreparedQuery results = datastore.prepare(query);
-        for (Entity entity: results.asIterable()) {
-            long id = entity.getKey().getId();
-            String userId = (String) entity.getProperty("userId");
-            String name = (String) entity.getProperty("name");
-            String address = (String) entity.getProperty("address");
-            String lat = (String) entity.getProperty("lat");
-            String lng = (String) entity.getProperty("long");
-            Date date = (Date) entity.getProperty("date");
-
-            Flag flag = new Flag(id, userId, name, address, lat, lng, date);
-            flags.add(flag);
-        }
-        return flags;
-    }
+    return flags;
+  }
 }

@@ -13,7 +13,8 @@ public final class Flag {
   public final String lng;
   private final Date date;
 
-  public Flag(long id, String userId, String name, String address, String lat, String lng, Date date) {
+  public Flag(
+      long id, String userId, String name, String address, String lat, String lng, Date date) {
     this.id = id;
     this.userId = userId;
     this.name = name;
@@ -24,26 +25,26 @@ public final class Flag {
   }
 
   public long getId() {
-      return id;
+    return id;
   }
 
   public String getUserId() {
-      return userId;
+    return userId;
   }
 
   public String getName() {
-      return name;
+    return name;
   }
 
   public String getLat() {
-      return lat;
+    return lat;
   }
 
   public String getLng() {
-      return lng;
+    return lng;
   }
 
   public String getAddress() {
-      return address;
+    return address;
   }
 }
