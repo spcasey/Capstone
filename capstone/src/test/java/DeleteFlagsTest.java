@@ -36,7 +36,7 @@ public class DeleteFlagsTest {
   }
 
   @Test
-  public void testIsTooOld1() throws Throwable {
+  public void testExpiredDateReturnsTrue() throws Throwable {
     Date date1 = new Date(2020, 1, 1);
     Date date2 = new Date(2020, 6, 1);
     DeleteFlags underTest = new DeleteFlags();
@@ -44,7 +44,7 @@ public class DeleteFlagsTest {
   }
 
   @Test
-  public void testIsTooOld2() throws Throwable {
+  public void testNonexpiredDateReturnsFalse() throws Throwable {
     Date date1 = new Date(2020, 1, 1);
     Date date2 = new Date(2020, 1, 5);
     DeleteFlags underTest = new DeleteFlags();
@@ -52,7 +52,7 @@ public class DeleteFlagsTest {
   }
 
   @Test
-  public void testIsTooOld3() throws Throwable {
+  public void testExpiredDateWithCalendarSetting() throws Throwable {
     Calendar c = Calendar.getInstance();
     c.setTime(new Date());
     c.add(Calendar.DATE, -20);
