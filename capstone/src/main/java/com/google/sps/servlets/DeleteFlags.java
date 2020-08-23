@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.google.sps.servlets;
+package com.google.sps;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -42,33 +42,29 @@ public class DeleteFlags extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    deleteExpiredFlags();
+  }
 
-    Query query = new Query("Flag").addSort("date", SortDirection.ASCENDING);
-
+  public void deleteExpiredFlags() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-	PreparedQuery results = datastore.prepare(query);
-    Date currentDate = new Date();
+    Query query = new Query("Flag").addSort("date", SortDirection.ASCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    Date currentDate = Calendar.getInstance().getTime();
 
-    /** Use a calendar object to count the date when the flags
-      * should expire. 
-      */
+    /** delete flags if the date property of the flag is before the previously calculated date. */
+    for (Entity entity : results.asIterable()) {
+      Date flagDate = (Date) entity.getProperty("date");
+      if (isTooOld(flagDate, currentDate)) {
+        datastore.delete(entity.getKey());
+      }
+    }
+  }
+
+  public boolean isTooOld(Date flagDate, Date currentDate) {
     Calendar c = Calendar.getInstance();
     c.setTime(currentDate);
     c.add(Calendar.DATE, -14);
     Date currentDateMinusTwoWeeks = c.getTime();
-
-    /** delete flags if the date property of the flag is before
-      * the previously calculated date. 
-      */
-    for (Entity entity: results.asIterable()) {
-        Date flagDate = (Date)entity.getProperty("date");
-        if (currentDateMinusTwoWeeks.compareTo(flagDate) > 0) {
-            datastore.delete(entity.getKey());
-        } else {
-            break;
-        }
-    }
+    return currentDateMinusTwoWeeks.compareTo(flagDate) > 0;
   }
-
 }
-
