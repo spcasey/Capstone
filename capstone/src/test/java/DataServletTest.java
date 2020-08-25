@@ -49,7 +49,7 @@ public class DataServletTest {
     Assert.assertEquals("testLat", entry.getProperty("lat"));
     Assert.assertEquals("testLng", entry.getProperty("long"));
     Assert.assertEquals("testUserId", entry.getProperty("userId"));
-    Assert.assertTrue(entry.getProperty("date").equals(currentDate));
+    Assert.assertEquals(entry.getProperty("date"), currentDate);
   }
 
   @Test
