@@ -82,7 +82,7 @@ h5 {
 /* Sets the map height */
 #map {
   position: relative;
-  height: 94%;
+  height: 87%;
 }
 
 #description {
@@ -104,8 +104,8 @@ h5 {
 }
 
 .title {
-    font-size: 20px;
-    line-height: 23px;
+  font-size: 20px;
+  line-height: 23px;
 }
 
 .col-12 {
