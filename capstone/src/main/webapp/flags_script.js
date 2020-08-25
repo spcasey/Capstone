@@ -35,7 +35,7 @@ const gradient = [
   "rgba(191, 0, 31, 1)",
   "rgba(255, 0, 0, 1)"
 ];
-
+ 
 /* geolocation api */
 function getUserLocation(){
   let time = new Date();
@@ -58,7 +58,7 @@ function getUserLocation(){
     }}
   );
 }
-
+ 
 /* Builds map object with zoom functionality */
 function generateMap(user_lat, user_lng) {
   localStorage.setItem("prev_page", "home");
@@ -67,7 +67,7 @@ function generateMap(user_lat, user_lng) {
   if (time.getHours() >= SWITCH_HOUR) { 
     map_style = night_map_style;
   }
-
+ 
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: user_lat, lng: user_lng}, 
     zoom: DEFAULT_MAP_ZOOM,
@@ -77,9 +77,9 @@ function generateMap(user_lat, user_lng) {
     minZoom: MIN_MAP_ZOOM,
     maxZoom: MAX_MAP_ZOOM
   });
-
+ 
   let promise = getFlags();
-
+ 
   let card = document.getElementById('pac-card');
   let input = document.getElementById('pac-input');
   let types = document.getElementById('type-selector');
@@ -139,23 +139,22 @@ function generateMap(user_lat, user_lng) {
     infowindowContent.children['place-icon'].src = place.icon;
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
-
+ 
     let close = isPlaceClose(user_lat, user_lng, 
       place.geometry.location.lat(), place.geometry.location.lng());
-
-    if(close === true){
+    
+    infowindowContent.children['report'].style.display = 'none';
+    if(close)
       infowindowContent.children['report'].style.display = 'inline-block';
-    }else{
-      infowindowContent.children['report'].style.display = 'none';
-    }
+    
     localStorage.setItem("form-place-name", place.name);
     localStorage.setItem("form-place-address", address);
     localStorage.setItem("form-lat", place.geometry.location.lat());
     localStorage.setItem("form-long", place.geometry.location.lng());
     localStorage.setItem("form-userId", String(getUserId()));
-
+ 
     infowindow.open(map, marker);
-
+ 
     marker.addListener('click', function() {
       infowindow.open(map, marker);
     });
@@ -169,15 +168,8 @@ function generateMap(user_lat, user_lng) {
     });
   }
  
-  setupClickListener('changetype-all', []);
-  setupClickListener('changetype-address', ['address']);
   setupClickListener('changetype-establishment', ['establishment']);
-  setupClickListener('changetype-geocode', ['geocode']);
  
-  document.getElementById('use-strict-bounds').addEventListener('click', function() {
-    autocomplete.setOptions({strictBounds: this.checked});
-  });
-
   let heatmap_data_users = [];
   promise.then((data) => {
     heatmap_data_users = data;
@@ -187,7 +179,7 @@ function generateMap(user_lat, user_lng) {
     heatmap.setMap(map);
   });
 }
-
+ 
 /* Populate the maps with flags from the data in datastore. */
 async function getFlags() {
   checkLogin();
@@ -201,7 +193,7 @@ async function getFlags() {
   }
   return heatmap_data_users;
 };
-
+ 
 /*sort flag data based on report count of places*/
 function getPlaceCounts(flags){
   let report_counts_dict = {};
@@ -219,11 +211,11 @@ function getPlaceCounts(flags){
   sorted_report_counts.sort(function(r1, r2) {
     return r2[1] - r1[1];
   });
-  let sorted_counts_dict = {}
+  let sorted_counts_dict = {};
   sorted_report_counts.forEach(([key, value]) => sorted_counts_dict[key] = value)
   return sorted_counts_dict;
 }
-
+ 
 /** Takes attributes such as lat and long from datastore
   * and transfer the information to the map while initializing
   * infowindows for the flags.
@@ -258,7 +250,7 @@ function createFlag(flags, i, heatmap_data_users, sorted_report_counts) {
     });
     return heatmap_data_users;
 }
-
+ 
 /*check if searched place is near the user (haversine formula), determines whether to let them report*/
 function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
   let rad = Math.PI / 180;
@@ -268,10 +260,9 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
     Math.sqrt(Math.sin(dlat / 2.0) * Math.sin(dlat / 2.0) + 
     Math.cos(p1_lat * rad)*Math.cos(p2_lat * rad) * 
     Math.sin(dlng / 2.0) * Math.sin(dlng / 2.0)));
-  if(Math.floor(dist) <= DISTANCE_THRESHOLD_MILES) return true;
-  return false;
+  return ((Math.floor(dist) <= DISTANCE_THRESHOLD_MILES) ? true : false);
 }
-
+ 
 /** Delete flags after the timestamp of the flags exceed
   * 14 days from the current timestamp to ensure all the data
   * is relevant.
@@ -280,7 +271,7 @@ function deleteExpiredFlags() {
     const params = new URLSearchParams;
     fetch('/delete-flag', {method: 'POST', body: params});
 }
-
+ 
 /** Delete flags that the current user reported. */
 function deleteUserFlag(id) {
   const params = new URLSearchParams;
@@ -288,13 +279,7 @@ function deleteUserFlag(id) {
   fetch('/deleteUserFlag', {method: 'POST', body: params});
   location.reload();
 }
-
-/** Testing function for mocha lol. */
-function testingMocha(A, B) {
-    return A + B;
-}
+ 
 
 /** Export functions to allow Mocha and Chai testing. */
-exports.testingMocha = testingMocha;
 exports.isPlaceClose = isPlaceClose;
- 

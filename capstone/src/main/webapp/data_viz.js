@@ -14,7 +14,6 @@
 const SWITCH_HOUR = 18; //6:00 pm
 const US_LAT = 37.0902;
 const US_LNG = -95.7129;
-
 const STATES_DISPLAYED = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware',
   'District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky',
   'Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana',
@@ -66,7 +65,7 @@ function initMap() {
   var selectBox = document.getElementById('data-variable');
   google.maps.event.addDomListener(selectBox, 'change', function() {
     clearData();
-    getCounties(selectBox.options[selectBox.selectedIndex].value); //"cases", "deaths"
+    getCounties(selectBox.options[selectBox.selectedIndex].value); 
   });
 
   // Load state polygons (only necessary once)
@@ -102,8 +101,8 @@ function styleFeature(feature) {
   var low = [78, 76, 44];  // color of smallest datum
   var high = [2, 69, 54];   // color of largest datum
 
-  let min = localStorage.getItem("min");
-  let max = localStorage.getItem("max");
+  let min = localStorage.getItem('min');
+  let max = localStorage.getItem('max');
 
   // Variable represents where the value sits between the min and max
   var delta = (feature.getProperty('input_variable') - min) / (max - min);
@@ -141,8 +140,8 @@ function mouseInToRegion(e) {
   // Set the hover state so the setStyle function can change the border
   e.feature.setProperty('state', 'hover');
   
-  let min = localStorage.getItem("min");
-  let max = localStorage.getItem("max"); 
+  let min = localStorage.getItem('min');
+  let max = localStorage.getItem('max'); 
 
   var percent = (e.feature.getProperty('input_variable') - min) / (max - min) * 100;
 
@@ -161,61 +160,42 @@ function mouseOutOfRegion(e) {
 }
 
 /* get County data from NYT in the form of a dictionary to put on the graph*/
-//date,county,state,fips,cases,deaths,confirmed_cases,confirmed_deaths,probable_cases,probable_deaths
+//date,county,state,fips,cases,deaths
 function getCounties(variable){
   fetch('/getCountyData').then(response => response.text()).then((output) => {
-    let nyt_data = {};
     let nyt_data_by_state = {};
     let state_names = [];
-    let data_lines = JSON.parse(output);
-    for(let i = 0; i < data_lines.length; i++){
-      if(data_lines[i] !== null){
-        let parsed_data = data_lines[i].split(',');
-        if(parsed_data.length === 10){
-          let date = parsed_data[0];
-          let county = parsed_data[1];
-          let state = parsed_data[2];
-          let fips = parsed_data[3];
-          let cases = parsed_data[4];
-          let deaths = parsed_data[5];
-          let confirmed_cases = parsed_data[6];
-          let confirmed_deaths = parsed_data[7];
-          let probable_cases = parsed_data[8];
-          let probable_deaths = parsed_data[9];
-          let key = county + '-' + fips;
-          //note that there may be blank '' attributes
-          let county_data = {"date": date, "state": state, "fips": fips, "cases": cases,
-            "deaths": deaths, "confirmed_cases": confirmed_cases, "confirmed_deaths": confirmed_deaths, 
-            "probable_cases": probable_cases, "probable_deaths": probable_deaths};
-          nyt_data[key] = county_data;
-          county_data["county"] = county;
-          county_data["fips"] = fips;
-          if(nyt_data_by_state[state] !== undefined){
-            nyt_data_by_state[state].push(county_data);  
-          }else{
-            if(STATES_DISPLAYED.indexOf(state) > -1){
-              state_names.push(state);
-              nyt_data_by_state[state] = [county_data];
-            }
+    let nyt_data = JSON.parse(output);
+    if(!('error' in nyt_data)){
+      Object.keys(nyt_data).forEach(function(county_id) {
+        let county_data = nyt_data[county_id];
+        let state_name = county_data.state;
+        if(nyt_data_by_state[state_name] !== undefined){
+          nyt_data_by_state[state_name].push(county_data);  
+        }else{
+          if(STATES_DISPLAYED.indexOf(state_name) > -1){
+            state_names.push(state_name);
+            nyt_data_by_state[state_name] = [county_data];
           }
         }
-      }
+      });
+    }else{
+      window.location.href = 'home.html';
     }
-
     let state_counts = {};
-    if(variable === "cases"){
-      state_counts = storeCaseCounts(state_names, nyt_data_by_state);
+    if(variable === 'cases'){
+      state_counts = JSON.parse(storeCaseCounts(state_names, nyt_data_by_state));
     }
-    if(variable === "deaths"){
-      state_counts = storeDeathCounts(state_names, nyt_data_by_state);
+    if(variable === 'deaths'){
+      state_counts = JSON.parse(storeDeathCounts(state_names, nyt_data_by_state));
     }
     setData(state_counts.dictionary);
 
     let max_count = Math.max.apply(null, state_counts.values);
     let min_count = Math.min.apply(null, state_counts.values);
 
-    localStorage.setItem("min", min_count);
-    localStorage.setItem("max", max_count);
+    localStorage.setItem('min', min_count);
+    localStorage.setItem('max', max_count);
     document.getElementById('data-min').textContent = min_count.toLocaleString();
     document.getElementById('data-max').textContent = max_count.toLocaleString();
   });
@@ -229,11 +209,11 @@ function setData(state_counts){
 }
 
 /* sum the data for the each of the counties in the state to estimate statewide death count */
-function totalDeathsState(state, counties){
+function getTotalDeathsByUsaState(state, counties){
   let death_count = 0;
   for(let i = 0; i < counties.length; i++){
     let deaths = parseInt(counties[i].deaths);
-    if(deaths !== NaN || death !== undefined){
+    if(!isNaN(deaths) && deaths !== undefined){
       death_count += deaths;
     }
   }
@@ -241,11 +221,11 @@ function totalDeathsState(state, counties){
 }
 
 /* sum the data for the each of the counties in the state to estimate statewide case count */
-function totalCasesState(state, counties){
+function getTotalCasesByUsaState(state, counties){
   let cases_count = 0;
   for(let i = 0; i < counties.length; i++){
     let cases = parseInt(counties[i].cases);
-    if(cases !== NaN){
+    if(!isNaN(cases) && cases !== undefined){
       cases_count += cases;
     }
   }
@@ -258,11 +238,12 @@ function storeCaseCounts(state_names, nyt_data_by_state){
   let state_case_count_values = [];
   for(let i = 0; i < state_names.length; i++){
     let counties = nyt_data_by_state[state_names[i]];
-    let state_cases = totalCasesState(state_names[i], counties);
+    let state_cases = getTotalCasesByUsaState(state_names[i], counties);
     state_case_counts[state_names[i]] = state_cases;
     state_case_count_values.push(state_cases);
   }
-  return {"dictionary": state_case_counts, "values": state_case_count_values};
+  return '{"dictionary": ' + JSON.stringify(state_case_counts) + 
+    ', "values":' + JSON.stringify(state_case_count_values) + '}';
 }
 
 /* form an array of death counts for each US state + DC */
@@ -271,9 +252,10 @@ function storeDeathCounts(state_names, nyt_data_by_state){
   let state_death_count_values = [];
   for(let i = 0; i < state_names.length; i++){
     let counties = nyt_data_by_state[state_names[i]];
-    let state_deaths = totalDeathsState(state_names[i], counties);
+    let state_deaths = getTotalDeathsByUsaState(state_names[i], counties);
     state_death_counts[state_names[i]] = state_deaths;     
     state_death_count_values.push(state_deaths);
   }
-  return {"dictionary": state_death_counts, "values": state_death_count_values};
+  return '{"dictionary": ' + JSON.stringify(state_death_counts) + 
+    ', "values":' + JSON.stringify(state_death_count_values) + '}';
 }
