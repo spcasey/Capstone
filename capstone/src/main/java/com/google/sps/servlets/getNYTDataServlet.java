@@ -13,9 +13,10 @@
 // limitations under the License.
 package com.google.sps.servlets;
 
-import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 import java.io.IOException;

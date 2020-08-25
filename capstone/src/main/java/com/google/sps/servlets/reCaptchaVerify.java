@@ -1,6 +1,5 @@
 package com.google.sps.servlets;
 
-import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 import com.google.gson.Gson;
