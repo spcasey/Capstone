@@ -50,14 +50,6 @@ hr.light {
 }
 
 
-/* Style the very first header */
-h5 {
-  vertical-align: middle;
-  line-height: 500px;
-  font-size: 70px;
-}
-
-
 /* Style the top banner for non-home pages */
 .banner2 {
   height: 500px;
@@ -68,21 +60,12 @@ h5 {
   text-align: center;
 }
 
- 
-/* Split the screen in half */
-.split {
-  height: 550px;
-  width: 23%;
-  position: absolute;
-  z-index: 1;
-  top: 750px;
-}
- 
-
 /* Sets the map height */
 #map {
-  position: relative;
-  height: 87%;
+  position: absolute;
+  top: 94px;
+  bottom: 0;
+  width: 100%;
 }
 
 #description {
@@ -97,10 +80,12 @@ h5 {
 
 #infowindow-content {
   display: none;
+  text-align: center;
 }
 
 #map #infowindow-content {
   display: inline;
+  text-align: center;
 }
 
 .title {
@@ -270,12 +255,26 @@ h5 {
 }
         
 #data-label:after { 
-  content: ':' 
+  content: ':';
 }
         
 #data-caret { 
   margin-left: -5px; 
   display: none; 
   font-size: 14px; 
-  width: 14px
+  width: 14px;
+}
+
+.box {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.box .row.header {
+  flex: 0 1 auto;
+}
+
+.box .row.content {
+  flex: 1 1 auto;
 }
