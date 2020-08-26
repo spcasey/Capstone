@@ -77,7 +77,6 @@ h5 {
   z-index: 1;
   top: 750px;
 }
- 
 
 /* Sets the map height */
 #map {
@@ -239,7 +238,7 @@ h5 {
   display: -webkit-box; 
   padding-top: 7px 
 }
-        
+
 .color-key {
   background: linear-gradient(to right,
   hsl(78, 76%, 44%) 0%,
