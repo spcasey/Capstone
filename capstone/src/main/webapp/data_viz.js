@@ -11,28 +11,47 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+const SWITCH_HOUR = 18; //6:00 pm
+const US_LAT = 37.0902;
+const US_LNG = -95.7129;
+const STATES_DISPLAYED = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware',
+  'District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky',
+  'Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana',
+  'Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio',
+  'Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee',
+  'Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
 
-var mapStyle = [{
+let map;
+/* Generates map visualization and choropleth layer. */
+function initMap() {
+  let land_color = '#fcfcfc';
+  let water_color = '#bfd4ff';
+  
+  let time = new Date();
+  if(time.getHours() >= SWITCH_HOUR){ 
+    land_color = '#023e58';
+    water_color = '#0e1626';
+    document.getElementById('top_nav').className = 'navbar navbar-expand-md navbar-dark bg-dark sticky-top';
+    document.getElementById('logo').src = 'images/logo.png';
+    document.body.style.backgroundColor = '#614051';
+    document.body.style.color = '#fff';
+  }
+
+  let mapStyle = [{
     'stylers': [{'visibility': 'off'}]
   }, {
     'featureType': 'landscape',
     'elementType': 'geometry',
-    'stylers': [{'visibility': 'on'}, {'color': '#fcfcfc'}]
+    'stylers': [{'visibility': 'on'}, {'color': land_color}]
   }, {
     'featureType': 'water',
     'elementType': 'geometry',
-    'stylers': [{'visibility': 'on'}, {'color': '#bfd4ff'}]
-}];
-      
-var map;
-var min = Number.MAX_VALUE; 
-var max = -Number.MAX_VALUE;
+    'stylers': [{'visibility': 'on'}, {'color': water_color}]
+  }];
 
-/* Generates map visualization and choropleth layer. */
-function initMap() {
   // Load the map
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 37.0902, lng: -95.7129},
+    center: {lat: US_LAT, lng: US_LNG},
     zoom: 4,
     styles: mapStyle
   });
@@ -46,7 +65,7 @@ function initMap() {
   var selectBox = document.getElementById('data-variable');
   google.maps.event.addDomListener(selectBox, 'change', function() {
     clearData();
-    loadData(selectBox.options[selectBox.selectedIndex].value);
+    getCounties(selectBox.options[selectBox.selectedIndex].value); 
   });
 
   // Load state polygons (only necessary once)
@@ -64,47 +83,11 @@ function loadMapShapes() {
   });
 }
 
-/* Generic data reading function for Michael(?) to edit */
-function loadData(variable) {
-  // Load the requested variable (using local copies)
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', variable + '.json');
-  xhr.onload = function() {
-    var data = JSON.parse(xhr.responseText);
-    data.shift(); 
-    data.forEach(function(row) {
-      var input = parseFloat(row[0]);
-      var stateId = row[1];
-
-      // Keep track of min and max values
-      if (input < min) {
-        min = input;
-      }
-    
-      if (input > max) {
-        max = input;
-      }
-
-      // Update the existing row with the new data
-      map.data.getFeatureById(stateId).setProperty('input_variable', input);
-    });
-
-    // Update and display the legend
-    document.getElementById('data-min').textContent = min.toLocaleString();
-    document.getElementById('data-max').textContent = max.toLocaleString();
-  };
-
-  xhr.send();
-}
-
 /* Removes data from each shape on the map and resets the UI. */
 function clearData() {
-  min = Number.MAX_VALUE;
-  max = -Number.MAX_VALUE;
   map.data.forEach(function(row) {
     row.setProperty('input_variable', undefined);
   });
-  
   document.getElementById('data-box').style.display = 'none';
   document.getElementById('data-caret').style.display = 'none';
 }
@@ -115,8 +98,11 @@ function clearData() {
  * Check out the docs for Data.StylingFunction.
  */
 function styleFeature(feature) {
-  var low = [5, 69, 54];  // color of smallest datum
-  var high = [151, 83, 34];   // color of largest datum
+  var low = [78, 76, 44];  // color of smallest datum
+  var high = [2, 69, 54];   // color of largest datum
+
+  let min = localStorage.getItem('min');
+  let max = localStorage.getItem('max');
 
   // Variable represents where the value sits between the min and max
   var delta = (feature.getProperty('input_variable') - min) / (max - min);
@@ -153,6 +139,9 @@ function styleFeature(feature) {
 function mouseInToRegion(e) {
   // Set the hover state so the setStyle function can change the border
   e.feature.setProperty('state', 'hover');
+  
+  let min = localStorage.getItem('min');
+  let max = localStorage.getItem('max'); 
 
   var percent = (e.feature.getProperty('input_variable') - min) / (max - min) * 100;
 
@@ -168,4 +157,105 @@ function mouseInToRegion(e) {
 function mouseOutOfRegion(e) {
   // Reset the hover state, returning the border to normal
   e.feature.setProperty('state', 'normal');
+}
+
+/* get County data from NYT in the form of a dictionary to put on the graph*/
+//date,county,state,fips,cases,deaths
+function getCounties(variable){
+  fetch('/getCountyData').then(response => response.text()).then((output) => {
+    let nyt_data_by_state = {};
+    let state_names = [];
+    let nyt_data = JSON.parse(output);
+    if(!('error' in nyt_data)){
+      Object.keys(nyt_data).forEach(function(county_id) {
+        let county_data = nyt_data[county_id];
+        let state_name = county_data.state;
+        if(nyt_data_by_state[state_name] !== undefined){
+          nyt_data_by_state[state_name].push(county_data);  
+        }else{
+          if(STATES_DISPLAYED.indexOf(state_name) > -1){
+            state_names.push(state_name);
+            nyt_data_by_state[state_name] = [county_data];
+          }
+        }
+      });
+    }else{
+      window.location.href = 'home.html';
+    }
+    let state_counts = {};
+    if(variable === 'cases'){
+      state_counts = JSON.parse(storeCaseCounts(state_names, nyt_data_by_state));
+    }
+    if(variable === 'deaths'){
+      state_counts = JSON.parse(storeDeathCounts(state_names, nyt_data_by_state));
+    }
+    setData(state_counts.dictionary);
+
+    let max_count = Math.max.apply(null, state_counts.values);
+    let min_count = Math.min.apply(null, state_counts.values);
+
+    localStorage.setItem('min', min_count);
+    localStorage.setItem('max', max_count);
+    document.getElementById('data-min').textContent = min_count.toLocaleString();
+    document.getElementById('data-max').textContent = max_count.toLocaleString();
+  });
+}
+
+/* load data for graph */
+function setData(state_counts){
+  map.data.forEach(function(row) {
+    row.setProperty('input_variable', state_counts[row.j.NAME]);
+  });
+}
+
+/* sum the data for the each of the counties in the state to estimate statewide death count */
+function getTotalDeathsByUsaState(state, counties){
+  let death_count = 0;
+  for(let i = 0; i < counties.length; i++){
+    let deaths = parseInt(counties[i].deaths);
+    if(!isNaN(deaths) && deaths !== undefined){
+      death_count += deaths;
+    }
+  }
+  return death_count;
+}
+
+/* sum the data for the each of the counties in the state to estimate statewide case count */
+function getTotalCasesByUsaState(state, counties){
+  let cases_count = 0;
+  for(let i = 0; i < counties.length; i++){
+    let cases = parseInt(counties[i].cases);
+    if(!isNaN(cases) && cases !== undefined){
+      cases_count += cases;
+    }
+  }
+  return cases_count;
+}
+
+/* form an array of case counts for each US state + DC */
+function storeCaseCounts(state_names, nyt_data_by_state){
+  let state_case_counts = {};
+  let state_case_count_values = [];
+  for(let i = 0; i < state_names.length; i++){
+    let counties = nyt_data_by_state[state_names[i]];
+    let state_cases = getTotalCasesByUsaState(state_names[i], counties);
+    state_case_counts[state_names[i]] = state_cases;
+    state_case_count_values.push(state_cases);
+  }
+  return '{"dictionary": ' + JSON.stringify(state_case_counts) + 
+    ', "values":' + JSON.stringify(state_case_count_values) + '}';
+}
+
+/* form an array of death counts for each US state + DC */
+function storeDeathCounts(state_names, nyt_data_by_state){ 
+  let state_death_counts = {};
+  let state_death_count_values = [];
+  for(let i = 0; i < state_names.length; i++){
+    let counties = nyt_data_by_state[state_names[i]];
+    let state_deaths = getTotalDeathsByUsaState(state_names[i], counties);
+    state_death_counts[state_names[i]] = state_deaths;     
+    state_death_count_values.push(state_deaths);
+  }
+  return '{"dictionary": ' + JSON.stringify(state_death_counts) + 
+    ', "values":' + JSON.stringify(state_death_count_values) + '}';
 }

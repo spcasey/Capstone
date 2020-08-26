@@ -82,7 +82,7 @@ h5 {
 /* Sets the map height */
 #map {
   position: relative;
-  height: 94%;
+  height: 87%;
 }
 
 #description {
@@ -104,8 +104,8 @@ h5 {
 }
 
 .title {
-    font-size: 20px;
-    line-height: 23px;
+  font-size: 20px;
+  line-height: 23px;
 }
 
 .col-12 {
@@ -242,13 +242,14 @@ h5 {
         
 .color-key {
   background: linear-gradient(to right,
-  hsl(5, 69%, 54%) 0%,
-  hsl(29, 71%, 51%) 17%,
-  hsl(54, 74%, 47%) 33%,
-  hsl(78, 76%, 44%) 50%,
-  hsl(102, 78%, 41%) 67%,
-  hsl(127, 81%, 37%) 83%,
-  hsl(151, 83%, 34%) 100%);
+  hsl(78, 76%, 44%) 0%,
+  hsl(54, 75%, 47%) 17%,
+  hsl(48, 74%, 48%) 33%,
+  hsl(40, 73%, 49%) 50%,
+  hsl(29, 71%, 51%) 67%,
+  hsl(15, 70%, 53%) 83%,
+  hsl(2, 69%, 54%) 100% 
+  );
   flex: 1;
   -webkit-box-flex: 1;
   margin: 0 5px;

@@ -25,9 +25,9 @@
 <body>
 <!-- Navigation -->
   <div id="navbar">
-  <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+  <nav id="top_nav" class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="home.html"><img src="images/logo1.png"></a>
+      <a class="navbar-brand" href="home.html"><img id="logo" src="images/logoBlack.png"></a>
       
       <button class="navbar-toggler" type="button" data-toggle="collapse"
         data-target="#navbarResponsive">
@@ -43,17 +43,16 @@
             <a id="about" class="nav-link" href="about.html">About Us</a>
           </li>
           <li class="nav-item">
-            <a id="data" class="nav-link" href="data.html">Recent Trends</a>
+            <a id="data" class="nav-link" href="trends.html">Recent Trends</a>
           </li>
           <li id="sign_in" class="nav-item">
             <div class="g-signin2" data-onsuccess="onSignIn" onclick="reload();"></div>
           </li>
           <li id="sign_out" class="nav-item">
-            <a href="#" onclick="signOut();">Sign out</a>
+            <a id="signOutButton" class="nav-link" href="#">Sign out</a>
           </li>
         </ul> 
       </div>
-    
     </div>
   </nav>
   </div>
@@ -61,24 +60,20 @@
   <div id="controls" class="nicebox">
     <div>
       <select id="data-variable">
-        <!-- TO DO: add data sources below -->
-        <option value="https://storage.googleapis.com/mapsdevsite/json/DP05_0001E">Total population (Example)</option>
-        <option value="">Weekly new cases</option>
-        <option value="">Weekly new deaths</option>
-        <option value="">Total cases</option>
-        <option value="">Total deaths</option>
+        <option value="cases">Total cases</option>
+        <option value="deaths">Total deaths</option>
       </select>
     </div>
 
     <div id="legend">
-      <div id="data-min">min</div>
-      <div class="color-key"><span id="data-caret">&#x25c6;</span></div>
-      <div id="data-max">max</div>
+      <div id="data-min" style="color: black;">min</div>
+      <div class="color-key"><span id="data-caret" style="color: black;">&#x25c6;</span></div>
+      <div id="data-max" style="color: black;">max</div>
     </div>
 
   </div>
 
-  <div id="data-box" class="nicebox">
+  <div id="data-box" class="nicebox" style="color: black;">
     <label id="data-label" for="data-value"></label>
     <span id="data-value"></span>
   </div>

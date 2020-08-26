@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="overflow:hidden">
+<html>
 <!-- Styling using Bootstrap and other libraries -->
 <head>
   <title>COVID Tracker</title>
@@ -17,29 +17,26 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM&libraries=places,visualization&callback=generateMap"
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM&libraries=places,visualization&callback=getUserLocation"
     async defer></script>
   <script src="flags_script.js"></script>
-  <script src="locations_script.js"></script>
   <script src="login_script.js"></script>
   <script src="day_map.js"></script> 
   <script src="night_map.js"></script> 
-  <script src="heatmap_script.js"></script>
 </head>
-
-
+ 
 <body style="overflow:hidden">
   <!-- Navigation -->
   <div id="navbar">
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+  <nav id="top_nav" class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="home.html"><img src="images/logo.png"></a>
+      <a class="navbar-brand" href="home.html"><img id="logo" src="images/logoBlack.png"></a>
       
       <button class="navbar-toggler" type="button" data-toggle="collapse"
         data-target="#navbarResponsive">
         <span class="navbar-toggler-icon"></span>
       </button>
-
+ 
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
@@ -63,27 +60,26 @@
     </div>
   </nav>
   </div>
-  
-  <div class="container-fluid padding" style="height:100%">
+  <div class="container-fluid" style="height:100%">
     <div class="row text-center" style="height:100%">
       <div class="col-12" style="height:100%">
         <div class="pac-card" id="pac-card">
-          <div id="pac" class="bg-dark">Search to add a flag:</div>
-
+          <div id="pac" class="bg-light" style="color: black;">Search a place to add a flag:</div>
+ 
           <div id="type-selector" class="pac-controls">
             <input type="radio" name="type" id="changetype-all" checked="checked">
             <label for="changetype-all">All</label>
-
-            <input type="radio" name="type" id="changetype-establishment" checked="checked">
-            <label for="changetype-establishment">Establishments</label>
-
+ 
+            <input type="radio" name="type" id="changetype-establishment" checked="checked" style="display:none;">
+            <label for="changetype-establishment" style="display:none;">Establishments</label>
+ 
             <input type="radio" name="type" id="changetype-address">
             <label for="changetype-address">Addresses</label>
-
+ 
             <input type="radio" name="type" id="changetype-geocode">
             <label for="changetype-geocode">Geocodes</label>
           </div>
-
+ 
           <div id="strict-bounds-selector" class="pac-controls">
             <input type="checkbox" id="use-strict-bounds" value="">
             <label for="use-strict-bounds">Strict Bounds</label>
@@ -94,21 +90,24 @@
             id="pac-input" placeholder="Enter a location">
           </div>
         </div>
-
-        <div id="map" style="position:relative" style="height:100%" style="width:100%"></div>
-
+ 
+        <div id="map"></div>
+ 
         <div class="padding" id="infowindow-content">
-          <img src="" width="23" height="23"" id="place-icon">
+          <img src="" width="23" height="23" id="place-icon">
           <span id="place-name"  class="title"></span><br>
           <span id="place-address"></span>
-          <br><br>
+          <br>
+          <br>
           <button id="report" class="btn btn-outline-danger" style="text-align:right;" 
-            onclick="window.location.href="submit_data.html">Report</button>
+            onclick="window.location.href='submit_data.html'">Report</button>
         </div>
         
       </div>
     </div>
   </div>
-
+  
 </body>
+ 
 </html>
+ 

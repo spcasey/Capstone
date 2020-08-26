@@ -1,0 +1,25 @@
+{
+  "name": "capstone",
+  "version": "1.0.0",
+  "description": "capstone project for 2020 STEP internship",
+  "main": "mochaTesting.js",
+  "scripts": {
+    "test": "mocha || true"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^7.7.0",
+    "eslint-config-google": "^0.14.0",
+    "jsdom": "16.4.0",
+    "jsdom-global": "3.0.2",
+    "mocha": "^8.1.1",
+    "mocha-jsdom": "^2.0.0",
+    "oauth2-mock-server": "^1.5.1"
+  },
+  "directories": {
+    "test": "test"
+  }
+}
