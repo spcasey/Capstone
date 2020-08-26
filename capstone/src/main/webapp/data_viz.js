@@ -21,7 +21,7 @@ const STATES_DISPLAYED = ['Alabama','Alaska','Arizona','Arkansas','California','
   'Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee',
   'Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
 
-//Populations data is from https://www.infoplease.com/us/states/state-population-by-rank
+// Populations data is from https://www.infoplease.com/us/states/state-population-by-rank
 const STATE_POPULATIONS = {'California': 39512223, 'Texas': 28995881, 'Florida': 21477737, 
   'New York': 19453561, 'Illinois': 12671821, 'Pennsylvania': 12801989, 'Ohio': 11689100, 
   'Georgia': 10617423, 'North Carolina': 10488084, 'Michigan': 9986857, 'New Jersey': 8882190, 
@@ -176,7 +176,6 @@ function mouseOutOfRegion(e) {
 }
 
 /* get County data from NYT in the form of a dictionary to put on the graph*/
-//date,county,state,fips,cases,deaths
 function getCounties(variable){
   fetch('/getCountyData').then(response => response.text()).then((output) => {
     let nyt_data_by_state = {};
