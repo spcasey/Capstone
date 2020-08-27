@@ -20,20 +20,20 @@ const MIN_MAP_ZOOM = 12;
 const DEFAULT_MAP_ZOOM = 15;
 const MAX_MAP_ZOOM = 18;
 const gradient = [
-  "rgba(0, 255, 255, 0)",
-  "rgba(0, 255, 255, 1)",
-  "rgba(0, 191, 255, 1)",
-  "rgba(0, 127, 255, 1)",
-  "rgba(0, 63, 255, 1)",
-  "rgba(0, 0, 255, 1)",
-  "rgba(0, 0, 223, 1)",
-  "rgba(0, 0, 191, 1)",
-  "rgba(0, 0, 159, 1)",
-  "rgba(0, 0, 127, 1)",
-  "rgba(63, 0, 91, 1)",
-  "rgba(127, 0, 63, 1)",
-  "rgba(191, 0, 31, 1)",
-  "rgba(255, 0, 0, 1)"
+  'rgba(0, 255, 255, 0)',
+  'rgba(0, 255, 255, 1)',
+  'rgba(0, 191, 255, 1)',
+  'rgba(0, 127, 255, 1)',
+  'rgba(0, 63, 255, 1)',
+  'rgba(0, 0, 255, 1)',
+  'rgba(0, 0, 223, 1)',
+  'rgba(0, 0, 191, 1)',
+  'rgba(0, 0, 159, 1)',
+  'rgba(0, 0, 127, 1)',
+  'rgba(63, 0, 91, 1)',
+  'rgba(127, 0, 63, 1)',
+  'rgba(191, 0, 31, 1)',
+  'rgba(255, 0, 0, 1)'
 ];
  
 /* geolocation api */
@@ -41,10 +41,6 @@ function getUserLocation(){
   let time = new Date();
   if (time.getHours() >= SWITCH_HOUR) {
     document.body.style.backgroundColor = '#614051';
-    document.getElementById('logo').src = 'images/logo.png';
-    document.getElementById("top_nav").className = "navbar navbar-expand-md navbar-dark bg-dark sticky-top";
-    document.getElementById("pac").style.color = "white";
-    document.getElementById("pac").className = "bg-dark";  
   }
   $.ajax({
     type : 'POST',
@@ -242,9 +238,9 @@ function createFlag(flags, i, heatmap_data_users, sorted_report_counts) {
     });
     marker.addListener('click', function() {
       if (getUserId() === userId) {
-          infoWindow.setContent(this.contentForUserWhoFlagged);
+        infoWindow.setContent(this.contentForUserWhoFlagged);
       } else {
-          infoWindow.setContent(this.content);
+        infoWindow.setContent(this.content);
       }
       infoWindow.open(map, marker);
     });
@@ -268,8 +264,8 @@ function isPlaceClose(p1_lat, p1_lng, p2_lat, p2_lng){
   * is relevant.
    */
 function deleteExpiredFlags() {
-    const params = new URLSearchParams;
-    fetch('/delete-flag', {method: 'POST', body: params});
+  const params = new URLSearchParams;
+  fetch('/delete-flag', {method: 'POST', body: params});
 }
  
 /** Delete flags that the current user reported. */
