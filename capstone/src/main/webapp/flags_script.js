@@ -233,7 +233,7 @@ function createFlag(flags, i, heatmap_data_users, sorted_report_counts) {
     icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
     title: flags[i].name,
     id: id,
-    contentForUserWhoFlagged: '<div class="padding"><span class="title">' + flags[i].name + 
+    contentForUserWhoFlagged: '<div class="padding" style="text-align:center"><span class="title">' + flags[i].name + 
       '</span><br>' + '<span>' + flags[i].address + '</span>' +
       '<br><br><div><button class="btn btn-outline-danger" style="text-align:right;"' 
       + 'onclick=deleteUserFlag(' + flags[i].id + ')>Delete</button></div></div>',
