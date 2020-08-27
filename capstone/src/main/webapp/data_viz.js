@@ -21,6 +21,22 @@ const STATES_DISPLAYED = ['Alabama','Alaska','Arizona','Arkansas','California','
   'Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee',
   'Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
 
+// Populations data is from https://www.infoplease.com/us/states/state-population-by-rank
+const STATE_POPULATIONS = {'California': 39512223, 'Texas': 28995881, 'Florida': 21477737, 
+  'New York': 19453561, 'Illinois': 12671821, 'Pennsylvania': 12801989, 'Ohio': 11689100, 
+  'Georgia': 10617423, 'North Carolina': 10488084, 'Michigan': 9986857, 'New Jersey': 8882190, 
+  'Virginia': 8535519,'Washington':7614893, 'Arizona': 7278717, 'Massachusetts': 6949503, 
+  'Tennessee': 6833174, 'Indiana': 6732219, 'Missouri': 6137428, 'Maryland': 6045680, 
+  'Wisconsin': 5822434, 'Colorado': 5758736, 'Minnesota': 5639632, 'South Carolina': 5148714, 
+  'Alabama': 4903185, 'Louisiana': 4648794, 'Kentucky': 4467673, 'Oregon': 4217737, 
+  'Oklahoma': 3956971, 'Connecticut': 3565287, 'Utah': 3205958, 'Iowa': 3155070, 
+  'Nevada': 3080156, 'Arkansas': 3017825, 'Mississippi': 2976149, 'Kansas': 2913314, 
+  'New Mexico': 2096829, 'Nebraska': 1934408, 'West Virginia': 1792147, 'Idaho': 1787065, 
+  'Hawaii': 1415872, 'New Hampshire': 1359711, 'Maine': 1344212, 'Montana': 1068778, 
+  'Rhode Island': 1059361, 'Delaware': 973764, 'South Dakota': 884659, 'North Dakota': 762062, 
+  'Alaska': 731545, 'District of Columbia': 705749, 'Vermont': 623989, 'Wyoming': 578759};
+
+
 let map;
 /* Generates map visualization and choropleth layer. */
 function initMap() {
@@ -147,7 +163,7 @@ function mouseInToRegion(e) {
 
   // Update the label
   document.getElementById('data-label').textContent = e.feature.getProperty('NAME');
-  document.getElementById('data-value').textContent = e.feature.getProperty('input_variable').toLocaleString();
+  document.getElementById('data-value').textContent = e.feature.getProperty('input_variable');
   document.getElementById('data-box').style.display = 'block';
   document.getElementById('data-caret').style.display = 'block';
   document.getElementById('data-caret').style.paddingLeft = percent + '%';
@@ -160,7 +176,6 @@ function mouseOutOfRegion(e) {
 }
 
 /* get County data from NYT in the form of a dictionary to put on the graph*/
-//date,county,state,fips,cases,deaths
 function getCounties(variable){
   fetch('/getCountyData').then(response => response.text()).then((output) => {
     let nyt_data_by_state = {};
@@ -182,13 +197,21 @@ function getCounties(variable){
     }else{
       window.location.href = 'home.html';
     }
+
     let state_counts = {};
     if(variable === 'cases'){
-      state_counts = JSON.parse(storeCaseCounts(state_names, nyt_data_by_state));
+      state_counts = JSON.parse(storeCaseCounts(state_names, nyt_data_by_state, false));
     }
     if(variable === 'deaths'){
-      state_counts = JSON.parse(storeDeathCounts(state_names, nyt_data_by_state));
+      state_counts = JSON.parse(storeDeathCounts(state_names, nyt_data_by_state, false));
     }
+    if(variable === 'cases_per_capita'){
+      state_counts = JSON.parse(storeCaseCounts(state_names, nyt_data_by_state, true));
+    }
+    if(variable === 'deaths_per_capita'){
+      state_counts = JSON.parse(storeDeathCounts(state_names, nyt_data_by_state, true));
+    }
+
     setData(state_counts.dictionary);
 
     let max_count = Math.max.apply(null, state_counts.values);
@@ -233,13 +256,17 @@ function getTotalCasesByUsaState(state, counties){
 }
 
 /* form an array of case counts for each US state + DC */
-function storeCaseCounts(state_names, nyt_data_by_state){
+function storeCaseCounts(state_names, nyt_data_by_state, is_per_capita){
   let state_case_counts = {};
   let state_case_count_values = [];
   for(let i = 0; i < state_names.length; i++){
-    let counties = nyt_data_by_state[state_names[i]];
-    let state_cases = getTotalCasesByUsaState(state_names[i], counties);
-    state_case_counts[state_names[i]] = state_cases;
+    let state_name = state_names[i];
+    let counties = nyt_data_by_state[state_name];
+    let state_cases = getTotalCasesByUsaState(state_name, counties);
+    if(is_per_capita){
+      state_cases = calculatePerCapita(state_name, state_cases);
+    }
+    state_case_counts[state_name] = state_cases;
     state_case_count_values.push(state_cases);
   }
   return '{"dictionary": ' + JSON.stringify(state_case_counts) + 
@@ -247,15 +274,24 @@ function storeCaseCounts(state_names, nyt_data_by_state){
 }
 
 /* form an array of death counts for each US state + DC */
-function storeDeathCounts(state_names, nyt_data_by_state){ 
+function storeDeathCounts(state_names, nyt_data_by_state, is_per_capita){ 
   let state_death_counts = {};
   let state_death_count_values = [];
   for(let i = 0; i < state_names.length; i++){
-    let counties = nyt_data_by_state[state_names[i]];
-    let state_deaths = getTotalDeathsByUsaState(state_names[i], counties);
-    state_death_counts[state_names[i]] = state_deaths;     
+    let state_name = state_names[i];
+    let counties = nyt_data_by_state[state_name];
+    let state_deaths = getTotalDeathsByUsaState(state_name, counties);
+    if(is_per_capita){
+      state_deaths = calculatePerCapita(state_name, state_deaths);
+    }
+    state_death_counts[state_name] = state_deaths;     
     state_death_count_values.push(state_deaths);
   }
   return '{"dictionary": ' + JSON.stringify(state_death_counts) + 
     ', "values":' + JSON.stringify(state_death_count_values) + '}';
+}
+
+/* calculates cases or deaths per 100,000 people. */
+function calculatePerCapita(state_name, state_total){
+  return Math.round(state_total / STATE_POPULATIONS[state_name] * 100000);
 }
