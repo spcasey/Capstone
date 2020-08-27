@@ -45,7 +45,7 @@ function getUserLocation(){
   $.ajax({
     type : 'POST',
     data: '', 
-    url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM", 
+    url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM', 
     success: function(result){
       generateMap(result.location.lat, result.location.lng);
     },
@@ -57,7 +57,7 @@ function getUserLocation(){
  
 /* Builds map object with zoom functionality */
 function generateMap(user_lat, user_lng) {
-  localStorage.setItem("prev_page", "home");
+  localStorage.setItem('prev_page', 'home');
   let time = new Date();
   let map_style = day_map_style;
   if (time.getHours() >= SWITCH_HOUR) { 
@@ -143,11 +143,11 @@ function generateMap(user_lat, user_lng) {
     if(close)
       infowindowContent.children['report'].style.display = 'inline-block';
     
-    localStorage.setItem("form-place-name", place.name);
-    localStorage.setItem("form-place-address", address);
-    localStorage.setItem("form-lat", place.geometry.location.lat());
-    localStorage.setItem("form-long", place.geometry.location.lng());
-    localStorage.setItem("form-userId", String(getUserId()));
+    localStorage.setItem('form-place-name', place.name);
+    localStorage.setItem('form-place-address', address);
+    localStorage.setItem('form-lat', place.geometry.location.lat());
+    localStorage.setItem('form-long', place.geometry.location.lng());
+    localStorage.setItem('form-userId', String(getUserId()));
  
     infowindow.open(map, marker);
  
