@@ -28,7 +28,6 @@ function verifyInput(){
     let verify_link = '/verify?response=' + response + '&secret_key=' + KEY; 
     fetch(verify_link).then(response => response.text()).then((output) => {
       let output_dict = JSON.parse(output);
-      console.log(output_dict);
       if (output_dict['error'] === undefined) { 
         if (output_dict['success'] === true) {
           localStorage.setItem('prev_page', '');
