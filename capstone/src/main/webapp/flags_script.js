@@ -19,6 +19,7 @@ const SWITCH_HOUR = 18; //6:00 pm
 const MIN_MAP_ZOOM = 12;
 const DEFAULT_MAP_ZOOM = 15;
 const MAX_MAP_ZOOM = 18;
+const KEY = CONFIG.GEOLOCATION_KEY;
 const gradient = [
   'rgba(0, 255, 255, 0)',
   'rgba(0, 255, 255, 1)',
@@ -45,7 +46,7 @@ function getUserLocation(){
   $.ajax({
     type : 'POST',
     data: '', 
-    url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCgozira2dGlwMHT_WgQpmg84fk3VhRglM', 
+    url: 'https://www.googleapis.com/geolocation/v1/geolocate?key=' + KEY, 
     success: function(result){
       generateMap(result.location.lat, result.location.lng);
     },
