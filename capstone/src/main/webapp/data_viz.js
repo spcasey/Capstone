@@ -47,8 +47,6 @@ function initMap() {
   if(time.getHours() >= SWITCH_HOUR){ 
     land_color = '#023e58';
     water_color = '#0e1626';
-    document.getElementById('top_nav').className = 'navbar navbar-expand-md navbar-dark bg-dark sticky-top';
-    document.getElementById('logo').src = 'images/logo.png';
     document.body.style.backgroundColor = '#614051';
     document.body.style.color = '#fff';
   }
@@ -114,8 +112,8 @@ function clearData() {
  * Check out the docs for Data.StylingFunction.
  */
 function styleFeature(feature) {
-  var low = [78, 76, 44];  // color of smallest datum
-  var high = [2, 69, 54];   // color of largest datum
+  const low = [43, 75, 58];  // color of smallest datum
+  const high = [2, 99, 35];   // color of largest datum
 
   let min = localStorage.getItem('min');
   let max = localStorage.getItem('max');
