@@ -2,3 +2,5 @@
 /capstone/node_modules
 !/capstone/node_modules/mocha
 !/capstone/node_modules/chai
+/capstone/.eslintrc.js
+/capstone/src/webapp/WEB-INF/config.js

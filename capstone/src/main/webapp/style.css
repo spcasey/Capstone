@@ -50,14 +50,6 @@ hr.light {
 }
 
 
-/* Style the very first header */
-h5 {
-  vertical-align: middle;
-  line-height: 500px;
-  font-size: 70px;
-}
-
-
 /* Style the top banner for non-home pages */
 .banner2 {
   height: 500px;
@@ -68,21 +60,12 @@ h5 {
   text-align: center;
 }
 
- 
-/* Split the screen in half */
-.split {
-  height: 550px;
-  width: 23%;
-  position: absolute;
-  z-index: 1;
-  top: 750px;
-}
- 
-
 /* Sets the map height */
 #map {
-  position: relative;
-  height: 94%;
+  position: absolute;
+  top: 94px;
+  bottom: 0;
+  width: 100%;
 }
 
 #description {
@@ -97,15 +80,17 @@ h5 {
 
 #infowindow-content {
   display: none;
+  text-align: center;
 }
 
 #map #infowindow-content {
   display: inline;
+  text-align: center;
 }
 
 .title {
-    font-size: 20px;
-    line-height: 23px;
+  font-size: 20px;
+  line-height: 23px;
 }
 
 .col-12 {
@@ -239,16 +224,16 @@ h5 {
   display: -webkit-box; 
   padding-top: 7px 
 }
-        
+
 .color-key {
   background: linear-gradient(to right,
-  hsl(78, 76%, 44%) 0%,
-  hsl(54, 75%, 47%) 17%,
-  hsl(48, 74%, 48%) 33%,
-  hsl(40, 73%, 49%) 50%,
-  hsl(29, 71%, 51%) 67%,
-  hsl(15, 70%, 53%) 83%,
-  hsl(2, 69%, 54%) 100% 
+  hsl(43, 75%, 58%) 0%,
+  hsl(35, 76%, 55%) 17%,
+  hsl(32, 79%, 50%) 33%,
+  hsl(29, 83%, 48%) 50%,
+  hsl(18, 88%, 42%) 67%,
+  hsl(15, 94%, 39%) 83%,
+  hsl(2, 99%, 35%) 100% 
   );
   flex: 1;
   -webkit-box-flex: 1;
@@ -270,12 +255,26 @@ h5 {
 }
         
 #data-label:after { 
-  content: ':' 
+  content: ':';
 }
         
 #data-caret { 
   margin-left: -5px; 
   display: none; 
   font-size: 14px; 
-  width: 14px
+  width: 14px;
+}
+
+.box {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.box .row.header {
+  flex: 0 1 auto;
+}
+
+.box .row.content {
+  flex: 1 1 auto;
 }
